@@ -11,6 +11,8 @@ import routerAuthUser from "./src/router/user/auth.router.js";
 import routerAuthAdmin from "./src/router/admin/auth.router.js";
 import routerAuthInstansi from "./src/router/instansi/auth.router.js";
 
+import instansiLokerRouter from "./src/router/loker/instansi.router.js";
+
 const PORT = process.env.PORT || 8181;
 const app = express();
 
@@ -30,6 +32,8 @@ app.get("/", (req, res) => {
 app.use("/api/user/auth", routerAuthUser);
 app.use("/api/admin/auth", routerAuthAdmin);
 app.use("/api/instansi/auth", routerAuthInstansi);
+
+app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
 
 app.listen(PORT, () => {
 	const conn = new Mongo();
