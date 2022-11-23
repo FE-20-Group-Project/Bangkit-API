@@ -1,0 +1,40 @@
+{
+	"name": "bangkit-api",
+	"version": "1.0.0",
+	"description": "bangkit-api",
+	"main": "app.js",
+	"type": "module",
+	"scripts": {
+		"dev": "nodemon app.js",
+		"start": "node app.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/FE-20-Group-Project/Bangkit-API.git"
+	},
+	"keywords": [
+		"express"
+	],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/FE-20-Group-Project/Bangkit-API/issues"
+	},
+	"homepage": "https://github.com/FE-20-Group-Project/Bangkit-API#readme",
+	"dependencies": {
+		"crypto": "^1.0.1",
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"express-validator": "^6.14.2",
+		"jsonwebtoken": "^8.5.1",
+		"jwt-encode": "^1.0.1",
+		"mongoose": "^6.7.3",
+		"passport": "^0.6.0",
+		"passport-jwt": "^4.0.0",
+		"passport-local": "^1.0.0",
+		"redis": "^4.5.0"
+	},
+	"devDependencies": {
+		"morgan": "^1.10.0"
+	}
+}
