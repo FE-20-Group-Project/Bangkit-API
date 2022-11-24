@@ -6,7 +6,7 @@ export default class LokerAdmin {
 
 	async getAllLoker(req, res, next) {
 		try {
-			const loker = await Loker.find().populate("user", "email");
+			const loker = await Loker.find().populate("user", "-password");
 			if (loker) {
 				return res.status(200).send({
 					status: res.statusCode,
@@ -28,7 +28,7 @@ export default class LokerAdmin {
 	async getLokerByID(req, res, next) {
 		try {
 			const params = req.params;
-			const loker = await Loker.findOne({ _id: mongoose.Types.ObjectId(params) });
+			const loker = await Loker.findOne({ _id: mongoose.Types.ObjectId(params) }).populate("user", "-password");
 			if (loker) {
 				return res.status(200).send({
 					status: res.statusCode,

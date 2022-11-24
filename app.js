@@ -12,9 +12,9 @@ import routerAuthUser from "./src/router/user/auth.router.js";
 import routerAuthAdmin from "./src/router/admin/auth.router.js";
 import routerAuthInstansi from "./src/router/instansi/auth.router.js";
 
-import instansiLokerRouter from "./src/router/loker/instansi.router.js";
-import userLokerRouter from "./src/router/loker/user.router.js";
-import adminLokerRouter from "./src/router/loker/admin.router.js";
+import instansiLokerRouter from "./src/router/instansi/loker.router.js";
+import userLokerRouter from "./src/router/user/loker.router.js";
+import adminLokerRouter from "./src/router/admin/loker.router.js";
 
 const PORT = process.env.PORT || 8181;
 const app = express();
@@ -23,7 +23,6 @@ app.use(express.json());
 app.use(morgan(`[LOG] ipAddr=:remote-addr date=[:date[web]] time=:response-time ms method=:method url=":url" status=":status" `));
 
 const corsConfig = {
-	// origin: true,
 	credentials: true,
 };
 app.use(cors(corsConfig));
