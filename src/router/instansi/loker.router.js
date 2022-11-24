@@ -1,8 +1,8 @@
 import express from "express";
-import LokerController from "../../controller/loker/instansi.controller.js";
+import LokerInstansi from "../../controller/instansi/loker.controller.js";
 
 const router = express.Router();
-const controller = new LokerController();
+const controller = new LokerInstansi();
 
 router.get("/", async (req, res, next) => {
 	await controller.getAllLoker(req, res, next);

@@ -1,12 +1,12 @@
 import Loker from "../../../database/models/loker.model.js";
 import mongoose from "mongoose";
 
-export default class LokerAdmin {
+export default class LokerInstansi {
 	constructor() {}
 
 	async getAllLoker(req, res, next) {
 		try {
-			const loker = await Loker.find().populate("user", "email");
+			const loker = await Loker.find().populate("user", "-password");
 			if (loker) {
 				return res.status(200).send({
 					status: res.statusCode,
@@ -28,7 +28,7 @@ export default class LokerAdmin {
 	async getLokerByID(req, res, next) {
 		try {
 			const params = req.params;
-			const loker = await Loker.findOne({ _id: mongoose.Types.ObjectId(params) });
+			const loker = await Loker.findOne({ _id: mongoose.Types.ObjectId(params) }).populate("user", "-password");
 
 			if (loker) {
 				return res.status(200).send({
@@ -56,7 +56,7 @@ export default class LokerAdmin {
 			}
 
 			const data = { name, desc, contact, image, user: req.user._id };
-			const loker = await Loker.create(data);
+			const loker = await (await Loker.create(data)).populate("user", "-password");
 			return res.status(200).send({
 				status: res.statusCode,
 				message: `Success Create Loker`,
@@ -76,7 +76,7 @@ export default class LokerAdmin {
 			if (loker) {
 				return res.status(202).send({
 					status: res.statusCode,
-					message: `Success Delete Loker`,
+					message: `Success Delete Loker with id : ${mongoose.Types.ObjectId(params)}`,
 				});
 			} else {
 				return res.status(404).send({
@@ -101,15 +101,14 @@ export default class LokerAdmin {
 				});
 			}
 
-			const lokerOld = await Loker.findOne({ _id: mongoose.Types.ObjectId(params) });
-			const loker = await Loker.findOneAndUpdate({ _id: mongoose.Types.ObjectId(params) }, data, { new: true });
+			const lokerOld = await Loker.findOne({ _id: mongoose.Types.ObjectId(params) }).populate("user", "-password");
+			const loker = await Loker.findOneAndUpdate({ _id: mongoose.Types.ObjectId(params) }, data, { new: true }).populate("user", "-password");
 
 			if (loker) {
 				return res.status(200).send({
 					status: res.statusCode,
 					message: `Success Get Data Loker`,
-					old_data: lokerOld,
-					new_data: loker,
+					data: { old_data: lokerOld, new_data: loker },
 				});
 			} else {
 				return res.status(404).send({
