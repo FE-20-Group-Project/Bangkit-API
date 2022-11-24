@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const lokerSchema = new Schema({
-	name: {
+	companyName: {
+		type: String,
+		required: true,
+	},
+	positionName: {
 		type: String,
 		required: true,
 	},
@@ -15,6 +19,26 @@ const lokerSchema = new Schema({
 		required: true,
 	},
 	image: {
+		type: String,
+		required: true,
+	},
+	category: {
+		type: Array,
+		required: true,
+	},
+	location: {
+		type: String,
+		required: true,
+	},
+	salary: {
+		type: String,
+		required: true,
+	},
+	qualification: {
+		type: String,
+		required: true,
+	},
+	workType: {
 		type: String,
 		required: true,
 	},
