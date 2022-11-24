@@ -42,6 +42,19 @@ function createValidationFor(route) {
 			return [body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"), body("password").notEmpty().withMessage("Input Password!").isLength({ min: 6 }).withMessage("Must be at Least 6 Chars Long")];
 		default:
 			return [];
+		case "add-loker-instansi":
+			return [
+				body("companyName").notEmpty().withMessage("Input company name!"),
+				body("positionName").notEmpty().withMessage("Input position name!"),
+				body("desc").notEmpty().withMessage("Input description!"),
+				body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"),
+				body("image").notEmpty().withMessage("Input company image!"),
+				body("category").notEmpty().withMessage("Input job category!"),
+				body("location").notEmpty().withMessage("Input company location!"),
+				body("salary").notEmpty().withMessage("Input salary!"),
+				body("qualification").notEmpty().withMessage("Input company qualification!"),
+				body("workType").notEmpty().withMessage("Input company work type!"),
+			];
 	}
 }
 function checkValidationResult(req, res, next) {

@@ -1,5 +1,6 @@
 import express from "express";
 import LokerInstansi from "../../controller/instansi/loker.controller.js";
+import { checkValidationResult, createValidationFor } from "../../middleware/validator.middleware.js";
 
 const router = express.Router();
 const controller = new LokerInstansi();
@@ -12,7 +13,7 @@ router.get("/:id", async (req, res, next) => {
 	await controller.getLokerByID(req, res, next);
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", createValidationFor("add-loker-instansi"), checkValidationResult, async (req, res, next) => {
 	await controller.addLoker(req, res, next);
 });
 
