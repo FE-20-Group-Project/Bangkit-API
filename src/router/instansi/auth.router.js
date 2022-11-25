@@ -14,8 +14,8 @@ router.post("/login", createValidationFor("login"), checkValidationResult, async
 	await controller.loginInstansi(req, res, next);
 });
 
-router.get("/logout", passport.authenticate("jwt-user", { session: false }), async (req, res, next) => {
-	await controller.logoutUser(req, res, next);
+router.get("/logout", passport.authenticate("jwt-instansi", { session: false }), async (req, res, next) => {
+	await controller.logoutInstansi(req, res, next);
 });
 
 export default router;
