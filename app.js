@@ -20,9 +20,8 @@ import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
 import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
 import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
 
-import artikelAdminRouter from "./src/router/admin/artikel.router.js";
-import artikelInstansiRouter from "./src/router/instansi/artikel.router.js";
-import artikelUserRouter from "./src/router/user/artikel.router.js";
+import artikelRouter from "./src/router/artikel/artikel.router.js";
+
 
 
 const PORT = process.env.PORT || 8181;
@@ -64,9 +63,7 @@ app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", {session: fals
 app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", {session: false}), beasiswaInstansiRouter);
 app.use("/api/user/beasiswa", passport.authenticate("jwt-user", {session: false}), beasiswaUserRouter);
 
-app.use("/api/admin/artikel", passport.authenticate("jwt-admin", {session: false}), beasiswaAdminRouter);
-app.use("/api/instansi/artikel", artikelInstansiRouter);
-app.use("/api/user/artikel", artikelUserRouter);
+app.use("/api/artikel", passport.authenticate("jwt-admin", {session: false}), artikelRouter);
 
 
 
