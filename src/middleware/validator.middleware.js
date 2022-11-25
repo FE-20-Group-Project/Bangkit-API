@@ -40,6 +40,7 @@ function createValidationFor(route) {
 			];
 		case "login":
 			return [body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"), body("password").notEmpty().withMessage("Input Password!").isLength({ min: 6 }).withMessage("Must be at Least 6 Chars Long")];
+
 		case "input-laporan":
 			return [
 				body("title").notEmpty().withMessage("Input title!"),
@@ -51,6 +52,19 @@ function createValidationFor(route) {
 			return [body("id_laporan").notEmpty().withMessage("Input id_laporan!"), body("content").notEmpty().withMessage("Input content!")];
 		case "update-balasan":
 			return [body("content").notEmpty().withMessage("Input content!")];
+		case "add-loker-instansi":
+			return [
+				body("companyName").notEmpty().withMessage("Input company name!"),
+				body("positionName").notEmpty().withMessage("Input position name!"),
+				body("desc").notEmpty().withMessage("Input description!"),
+				body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"),
+				body("image").notEmpty().withMessage("Input company image!").isURL().withMessage("Input must be in URL form"),
+				body("category").notEmpty().withMessage("Input job category!").isArray().withMessage("Input must be array!"),
+				body("location").notEmpty().withMessage("Input company location!"),
+				body("salary").notEmpty().withMessage("Input salary!"),
+				body("qualification").notEmpty().withMessage("Input company qualification!"),
+				body("workType").notEmpty().withMessage("Input company work type!"),
+			];
 		default:
 			return [];
 	}
