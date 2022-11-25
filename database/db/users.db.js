@@ -6,7 +6,12 @@ export default class UserDB {
 	}
 
 	async createUser(name, email, password, contact, image) {
-		const data = await this.user.create({ name, email, password, contact, image });
+		const data = await this.user.create({ name, email, password, contact, image, isBlocked: false });
+		return data;
+	}
+
+	async findAllUser() {
+		const data = await this.user.find({});
 		return data;
 	}
 
@@ -24,6 +29,12 @@ export default class UserDB {
 
 	async updateUserData(_id, contact, password, name, email) {
 		const datas = await this.user.findOneAndUpdate({ _id }, { contact, password, name, email }, { new: true });
+		return datas;
+	}
+
+	async updateBlock(_id, isBlocked) {
+		const blokFix = isBlocked == "true" ? true : false;
+		const datas = await this.user.findOneAndUpdate({ _id }, { isBlocked: blokFix }, { new: true });
 		return datas;
 	}
 }

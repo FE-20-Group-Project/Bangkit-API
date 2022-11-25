@@ -5,8 +5,8 @@ export default class InstansiDB {
 		this.instansi = Instansi;
 	}
 
-	async createInstansi(name, email, password, image) {
-		const data = await this.instansi.create({ name, email, password, image });
+	async createInstansi(name, email, password, image, dokumen) {
+		const data = await this.instansi.create({ name, email, password, image, status: "pending", isBlocked: false, dokumen });
 		return data;
 	}
 
@@ -22,8 +22,25 @@ export default class InstansiDB {
 		return result;
 	}
 
+	async updateStatusInstansi(_id, status) {
+		const statusFix = status == "true" ? "accept" : "pending";
+		const datas = await this.instansi.findOneAndUpdate({ _id }, { status: statusFix }, { new: true });
+		return datas;
+	}
+
 	async updateInstansiData(_id, password, name, email) {
 		const datas = await this.instansi.findOneAndUpdate({ _id }, { password, name, email }, { new: true });
+		return datas;
+	}
+
+	async findAllInstansi() {
+		const datas = await this.instansi.find({});
+		return datas;
+	}
+
+	async updateBlock(_id, isBlocked) {
+		const blokFix = isBlocked == "true" ? true : false;
+		const datas = await this.instansi.findOneAndUpdate({ _id }, { isBlocked: blokFix }, { new: true });
 		return datas;
 	}
 }

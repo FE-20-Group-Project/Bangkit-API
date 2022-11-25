@@ -20,6 +20,18 @@ const InstansiSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		status: {
+			type: String,
+			required: true,
+		},
+		dokumen: {
+			type: String,
+			required: true,
+		},
+		isBlocked: {
+			type: Boolean,
+			required: true,
+		},
 	},
 	{ versionKey: false }
 );

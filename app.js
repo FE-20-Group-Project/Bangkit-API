@@ -11,7 +11,7 @@ import passp from "./src/middleware/passport.middleware.js";
 
 import routerUser from "./src/router/user/user.router.js";
 import routerInstansi from "./src/router/instansi/instansi.router.js";
-import routerAuthAdmin from "./src/router/admin/auth.router.js";
+import routerAdmin from "./src/router/admin/admin.router.js";
 
 import instansiLokerRouter from "./src/router/instansi/loker.router.js";
 import userLokerRouter from "./src/router/user/loker.router.js";
@@ -60,7 +60,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", routerUser);
 app.use("/api/instansi", routerInstansi);
-app.use("/api/admin/auth", routerAuthAdmin);
+app.use("/api/admin", routerAdmin);
 
 app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
 app.use("/api/user/loker", passport.authenticate("jwt-user", { session: false }), userLokerRouter);
