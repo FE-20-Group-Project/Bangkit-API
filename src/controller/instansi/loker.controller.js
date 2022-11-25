@@ -1,4 +1,5 @@
 import Loker from "../../../database/models/loker.model.js";
+import Instansi from "../../../database/models/instansi.model.js";
 import mongoose from "mongoose";
 import toMs from "ms";
 import { moment } from "../../../lib/moment.js";
@@ -31,6 +32,30 @@ export default class LokerInstansi {
 		try {
 			const params = req.params;
 			const loker = await Loker.findOne({ _id: mongoose.Types.ObjectId(params) }).populate("user", "-password");
+
+			if (loker) {
+				return res.status(200).send({
+					status: res.statusCode,
+					message: `Success Get Data Loker`,
+					data: loker,
+				});
+			} else {
+				return res.status(404).send({
+					status: res.statusCode,
+					message: `Data Loker Tidak Ditemukan`,
+				});
+			}
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });
+		}
+	}
+
+	async getLokerByUserID(req, res, next) {
+		try {
+			const params = req.params;
+			const instansi = await Instansi.findOne({ _id: mongoose.Types.ObjectId(params) });
+			const loker = await Loker.find({ user: instansi._id });
 
 			if (loker) {
 				return res.status(200).send({

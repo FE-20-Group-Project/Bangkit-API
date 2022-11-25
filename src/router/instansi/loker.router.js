@@ -13,6 +13,10 @@ router.get("/:id", async (req, res, next) => {
 	await controller.getLokerByID(req, res, next);
 });
 
+router.get("/only/:id", async (req, res, next) => {
+	await controller.getLokerByUserID(req, res, next);
+});
+
 router.post("/", createValidationFor("add-loker-instansi"), checkValidationResult, async (req, res, next) => {
 	await controller.addLoker(req, res, next);
 });
