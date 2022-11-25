@@ -16,6 +16,10 @@ const InstansiSchema = new mongoose.Schema(
 			required: true,
 			minlength: 6,
 		},
+		image: {
+			type: String,
+			required: true,
+		},
 	},
 	{ versionKey: false }
 );
