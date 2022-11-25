@@ -61,6 +61,13 @@ app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", {session: fals
 app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", {session: false}), beasiswaInstansiRouter);
 app.use("/api/user/beasiswa", passport.authenticate("jwt-user", {session: false}), beasiswaUserRouter);
 
+app.use("/api/admin/artikel", passport.authenticate("jwt-admin", {session: false}), beasiswaAdminRouter);
+app.use("/api/instansi/artikel", artikelInstansiRouter);
+app.use("/api/user/artikel", artikelUserRouter);
+
+
+
+
 app.listen(PORT, () => {
 	const conn = new Mongo();
 	conn.connection();
