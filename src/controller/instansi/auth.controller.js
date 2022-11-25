@@ -1,10 +1,12 @@
 import passport from "passport";
 import jwt from "jsonwebtoken";
+import path from "path";
 import AdminDB from "../../../database/db/admins.db.js";
 import InstansiDB from "../../../database/db/instansi.db.js";
 import UserDB from "../../../database/db/users.db.js";
 import { getHashedPassword } from "../../../lib/crypto.js";
 import { client } from "../../../database/connect/redis.connect.js";
+import { randomText } from "../../../lib/random.js";
 
 export default class InstansiAuthController extends InstansiDB {
 	constructor() {
@@ -14,27 +16,37 @@ export default class InstansiAuthController extends InstansiDB {
 	async registerIntansi(req, res, next) {
 		try {
 			const { name, email, password } = req.body;
-			const user = await new UserDB().findByEmail(email);
-			const admins = await new AdminDB().findByEmail(email);
-			if (user || admins) {
-				return res.status(400).send({
-					status: res.statusCode,
-					message: `Email Sudah Pernah Terdaftar Sebagai Role Lain!`,
-				});
-			}
-			const data = await this.findByEmail(email);
-			if (data) {
-				return res.status(400).send({
-					status: res.statusCode,
-					message: `Email Sudah Pernah Terdaftar Sebelumnya!`,
-				});
+			if (req.files && Object.keys(req.files).length !== 0) {
+				const file = req.files.file;
+				const dest = `./public/profile/${randomText(15)}${path.extname(file.name)}`;
+				await file.mv(dest);
+				const user = await new UserDB().findByEmail(email);
+				const admins = await new AdminDB().findByEmail(email);
+				if (user || admins) {
+					return res.status(400).send({
+						status: res.statusCode,
+						message: `Email Sudah Pernah Terdaftar Sebagai Role Lain!`,
+					});
+				}
+				const data = await this.findByEmail(email);
+				if (data) {
+					return res.status(400).send({
+						status: res.statusCode,
+						message: `Email Sudah Pernah Terdaftar Sebelumnya!`,
+					});
+				} else {
+					const hashed = getHashedPassword(password);
+					const data = await this.createInstansi(name, email, hashed, dest.split("public")[1]);
+					return res.status(200).send({
+						status: res.statusCode,
+						message: `Sukses Mendaftar Instansi`,
+						data,
+					});
+				}
 			} else {
-				const hashed = getHashedPassword(password);
-				const data = await this.createInstansi(name, email, hashed);
-				return res.status(200).send({
+				return res.status(400).send({
 					status: res.statusCode,
-					message: `Sukses Mendaftar Instansi`,
-					data,
+					message: `Upload File Image!`,
 				});
 			}
 		} catch (error) {
@@ -69,6 +81,7 @@ export default class InstansiAuthController extends InstansiDB {
 						status: res.statusCode,
 						message: info.message,
 						token,
+						data: instansi,
 					});
 				});
 			})(req, res, next);

@@ -3,14 +3,15 @@ import express from "express";
 import passport from "passport";
 import morgan from "morgan";
 import cors from "cors";
+import fileUpload from "express-fileupload";
 
 import Mongo from "./database/connect/mongo.connect.js";
 import { Redis } from "./database/connect/redis.connect.js";
 import passp from "./src/middleware/passport.middleware.js";
 
-import routerAuthUser from "./src/router/user/auth.router.js";
+import routerUser from "./src/router/user/user.router.js";
+import routerInstansi from "./src/router/instansi/instansi.router.js";
 import routerAuthAdmin from "./src/router/admin/auth.router.js";
-import routerAuthInstansi from "./src/router/instansi/auth.router.js";
 
 import instansiLokerRouter from "./src/router/instansi/loker.router.js";
 import userLokerRouter from "./src/router/user/loker.router.js";
@@ -20,8 +21,6 @@ import laporanRouter from "./src/router/laporan/laporan.router.js";
 import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
 import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
 import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
-
-
 
 const PORT = process.env.PORT || 8181;
 const app = express();
@@ -40,6 +39,13 @@ app.use(function (req, res, next) {
 	next();
 });
 
+app.use(express.static("public"));
+app.use(
+	fileUpload({
+		fileSize: 10 * 1024 * 1024,
+	})
+);
+
 app.use(passport.initialize());
 passp(passport);
 
@@ -50,20 +56,19 @@ app.get("/", (req, res) => {
 	});
 });
 
-app.use("/api/user/auth", routerAuthUser);
+app.use("/api/user", routerUser);
+app.use("/api/instansi", routerInstansi);
 app.use("/api/admin/auth", routerAuthAdmin);
-app.use("/api/instansi/auth", routerAuthInstansi);
 
 app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
 app.use("/api/user/loker", passport.authenticate("jwt-user", { session: false }), userLokerRouter);
 app.use("/api/admin/loker", passport.authenticate("jwt-admin", { session: false }), adminLokerRouter);
 
-
 app.use("/api/laporan", laporanRouter);
 
-app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", {session: false}), beasiswaAdminRouter);
-app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", {session: false}), beasiswaInstansiRouter);
-app.use("/api/user/beasiswa", passport.authenticate("jwt-user", {session: false}), beasiswaUserRouter);
+app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", { session: false }), beasiswaAdminRouter);
+app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", { session: false }), beasiswaInstansiRouter);
+app.use("/api/user/beasiswa", passport.authenticate("jwt-user", { session: false }), beasiswaUserRouter);
 
 app.listen(PORT, () => {
 	const conn = new Mongo();
