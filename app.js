@@ -20,6 +20,9 @@ import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
 import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
 import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
 
+import artikelAdminRouter from "./src/router/admin/artikel.router.js";
+import artikelInstansiRouter from "./src/router/instansi/artikel.router.js";
+import artikelUserRouter from "./src/router/user/artikel.router.js";
 
 
 const PORT = process.env.PORT || 8181;

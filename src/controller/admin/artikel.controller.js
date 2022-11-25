@@ -120,7 +120,7 @@ class ArtikelAdmin {
         }
     }
 }
-}
+
 
 
 export default ArtikelAdmin;

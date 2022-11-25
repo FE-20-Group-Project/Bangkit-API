@@ -46,4 +46,4 @@ class ArtikelInstansi {
 }
 
 
-export default ArtikelUser;
+export default ArtikelInstansi;
