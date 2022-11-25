@@ -1,5 +1,7 @@
 import Loker from "../../../database/models/loker.model.js";
 import mongoose from "mongoose";
+import toMs from "ms";
+import { moment } from "../../../lib/moment.js";
 
 export default class LokerInstansi {
 	constructor() {}
@@ -50,12 +52,13 @@ export default class LokerInstansi {
 
 	async addLoker(req, res, next) {
 		try {
-			const { companyName, positionName, desc, email, image, category, location, salary, qualification, workType } = req.body;
-			if (!companyName || !positionName || !desc || !email || !image || !category || !location || !salary || !qualification || !workType) {
+			const { companyName, positionName, desc, email, category, location, salary, qualification, workType, expired } = req.body;
+			if (!companyName || !positionName || !desc || !email || !category || !location || !salary || !qualification || !workType || !expired) {
 				return res.status(400).send({ status: res.statusCode, message: `Bad Request! Input Body!` });
 			}
 
-			const data = { companyName, positionName, desc, email, image, category, location, salary, qualification, workType, user: req.user._id };
+			const date = moment().format("DD/MM/YY HH:mm:ss");
+			const data = { companyName, positionName, desc, email, image: req.user.image, category, location, salary, qualification, workType, date, update: date, expired: Date.now() + toMs(`${expired}d`), user: req.user._id };
 			const loker = await (await Loker.create(data)).populate("user", "-password");
 			return res.status(200).send({
 				status: res.statusCode,

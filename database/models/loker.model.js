@@ -42,6 +42,18 @@ const lokerSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	date: {
+		type: String,
+		required: true,
+	},
+	update: {
+		type: String,
+		required: true,
+	},
+	expired: {
+		type: String,
+		required: true,
+	},
 	user: {
 		type: mongoose.ObjectId,
 		required: true,
