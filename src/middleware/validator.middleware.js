@@ -63,6 +63,7 @@ function createValidationFor(route) {
 				body("salary").notEmpty().withMessage("Input salary!"),
 				body("qualification").notEmpty().withMessage("Input company qualification!"),
 				body("workType").notEmpty().withMessage("Input company work type!"),
+				body("expired").notEmpty().withMessage("Input total day before expired!"),
 			];
 		default:
 			return [];
