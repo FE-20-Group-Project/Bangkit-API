@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const UsersSchema = new mongoose.Schema(
 	{
@@ -18,6 +18,10 @@ const UsersSchema = new mongoose.Schema(
 			minlength: 6,
 		},
 		contact: {
+			type: String,
+			required: true,
+		},
+		image: {
 			type: String,
 			required: true,
 		},

@@ -182,4 +182,32 @@ export default function (passport) {
 			}
 		)
 	);
+
+	passport.use(
+		"jwt-all",
+		new JWTStrategy(
+			{
+				jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+				secretOrKey: process.env.JWT_KEY,
+			},
+			async (jwtPayload, cb) => {
+				const token = sign(jwtPayload, process.env.JWT_KEY);
+				const inBlackList = await client.get(`jwt_bl_${token}`);
+				return Instansi.findOne({ _id: jwtPayload._id })
+					.then(async (instansi) => {
+						if (inBlackList) return cb(null, false);
+						if (instansi) return cb(null, instansi);
+						const admin = await Admins.findOne({ _id: jwtPayload._id });
+						if (admin) return cb(null, admin);
+						const user = await Users.findOne({ _id: jwtPayload._id });
+						if (user) return cb(null, user);
+						else return cb(null, false);
+					})
+					.catch((err) => {
+						console.log(err);
+						return cb(err);
+					});
+			}
+		)
+	);
 }
