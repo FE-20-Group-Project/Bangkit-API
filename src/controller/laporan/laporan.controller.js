@@ -13,6 +13,12 @@ export default class LaporanUserController extends LaporanDB {
 			const { title, category, subcategory, content } = req.body;
 			const data = await this.user.findByEmail(req.user.email);
 			if (data) {
+				if (data.isBlocked) {
+					return res.status(423).send({
+						status: res.statusCode,
+						message: "Oops anda telah di block!",
+					});
+				}
 				const createLaporan = await this.createLaporanDB(data, title, category, subcategory, content);
 				return res.status(200).send({
 					status: res.statusCode,
@@ -60,6 +66,12 @@ export default class LaporanUserController extends LaporanDB {
 			const data = await this.findOneById(id);
 			if (data) {
 				if (data.user.email == req.user.email) {
+					if (req.user.isBlocked) {
+						return res.status(423).send({
+							status: res.statusCode,
+							message: "Oops anda telah di block!",
+						});
+					}
 					await this.deleteOne(id);
 					return res.status(200).send({
 						status: res.statusCode,
@@ -90,6 +102,12 @@ export default class LaporanUserController extends LaporanDB {
 			const data = await this.findOneById(id);
 			if (data) {
 				if (data.user.email == req.user.email) {
+					if (req.user.isBlocked) {
+						return res.status(423).send({
+							status: res.statusCode,
+							message: "Oops anda telah di block!",
+						});
+					}
 					const obj = { title: title ? title : data.title, content: content ? content : data.content, category: category ? category : data.category, subcategory: subcategory ? subcategory : data.subcategory };
 					const updates = await this.updateLaporan(id, obj.title, obj.category, obj.subcategory, obj.content);
 					return res.status(200).send({
@@ -120,6 +138,12 @@ export default class LaporanUserController extends LaporanDB {
 			const { content, id_laporan } = req.body;
 			const data = await this.findOneById(id_laporan);
 			if (data) {
+				if (req.user.isBlocked) {
+					return res.status(423).send({
+						status: res.statusCode,
+						message: "Oops anda telah di block!",
+					});
+				}
 				const postReply = await this.createReply(req.user, id_laporan, content);
 				return res.status(200).send({
 					status: res.statusCode,
@@ -167,6 +191,12 @@ export default class LaporanUserController extends LaporanDB {
 			const dataBalasan = await this.findReplyId(id);
 			if (dataBalasan) {
 				if (req.user.email == dataBalasan.user.email) {
+					if (req.user.isBlocked) {
+						return res.status(423).send({
+							status: res.statusCode,
+							message: "Oops anda telah di block!",
+						});
+					}
 					const updateReply = await this.updateReply(id, content);
 					return res.status(200).send({
 						status: res.statusCode,
@@ -197,6 +227,12 @@ export default class LaporanUserController extends LaporanDB {
 			const data = await this.findReplyId(id);
 			if (data) {
 				if (data.user.email == req.user.email) {
+					if (req.user.isBlocked) {
+						return res.status(423).send({
+							status: res.statusCode,
+							message: "Oops anda telah di block!",
+						});
+					}
 					await this.deleteOneReply(id);
 					return res.status(200).send({
 						status: res.statusCode,

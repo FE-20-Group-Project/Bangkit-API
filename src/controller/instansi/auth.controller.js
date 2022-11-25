@@ -16,37 +16,44 @@ export default class InstansiAuthController extends InstansiDB {
 	async registerIntansi(req, res, next) {
 		try {
 			const { name, email, password } = req.body;
-			if (req.files && Object.keys(req.files).length !== 0) {
+			if (req.files.file && Object.keys(req.files?.file).length !== 0) {
 				const file = req.files.file;
-				const dest = `./public/profile/${randomText(15)}${path.extname(file.name)}`;
+				var dest = `./public/profile/${randomText(15)}${path.extname(file.name)}`;
 				await file.mv(dest);
-				const user = await new UserDB().findByEmail(email);
-				const admins = await new AdminDB().findByEmail(email);
-				if (user || admins) {
-					return res.status(400).send({
-						status: res.statusCode,
-						message: `Email Sudah Pernah Terdaftar Sebagai Role Lain!`,
-					});
-				}
-				const data = await this.findByEmail(email);
-				if (data) {
-					return res.status(400).send({
-						status: res.statusCode,
-						message: `Email Sudah Pernah Terdaftar Sebelumnya!`,
-					});
-				} else {
-					const hashed = getHashedPassword(password);
-					const data = await this.createInstansi(name, email, hashed, dest.split("public")[1]);
-					return res.status(200).send({
-						status: res.statusCode,
-						message: `Sukses Mendaftar Instansi`,
-						data,
-					});
-				}
+			} else {
+				var dest = `./public/profile/none.png`;
+			}
+			if (req.files.dokumen && Object.keys(req.files?.dokumen).length !== 0) {
+				const file = req.files.dokumen;
+				var destDoc = `./public/dokumen/${randomText(15)}${path.extname(file.name)}`;
+				await file.mv(destDoc);
 			} else {
 				return res.status(400).send({
 					status: res.statusCode,
-					message: `Upload File Image!`,
+					message: `Wajib Mengisi Dokumen Pendukung!`,
+				});
+			}
+			const user = await new UserDB().findByEmail(email);
+			const admins = await new AdminDB().findByEmail(email);
+			if (user || admins) {
+				return res.status(400).send({
+					status: res.statusCode,
+					message: `Email Sudah Pernah Terdaftar Sebagai Role Lain!`,
+				});
+			}
+			const data = await this.findByEmail(email);
+			if (data) {
+				return res.status(400).send({
+					status: res.statusCode,
+					message: `Email Sudah Pernah Terdaftar Sebelumnya!`,
+				});
+			} else {
+				const hashed = getHashedPassword(password);
+				const data = await this.createInstansi(name, email, hashed, dest.split("public")[1], destDoc.split("public")[1]);
+				return res.status(200).send({
+					status: res.statusCode,
+					message: `Sukses Mendaftar Instansi`,
+					data,
 				});
 			}
 		} catch (error) {
