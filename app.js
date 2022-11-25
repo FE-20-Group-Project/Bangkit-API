@@ -22,6 +22,8 @@ import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
 import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
 import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
 
+import artikelRouter from "./src/router/artikel/artikel.router.js";
+
 const PORT = process.env.PORT || 8181;
 const app = express();
 
@@ -69,6 +71,11 @@ app.use("/api/laporan", laporanRouter);
 app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", { session: false }), beasiswaAdminRouter);
 app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", { session: false }), beasiswaInstansiRouter);
 app.use("/api/user/beasiswa", passport.authenticate("jwt-user", { session: false }), beasiswaUserRouter);
+
+app.use("/api/artikel", passport.authenticate("jwt-admin", {session: false}), artikelRouter);
+
+
+
 
 app.listen(PORT, () => {
 	const conn = new Mongo();
