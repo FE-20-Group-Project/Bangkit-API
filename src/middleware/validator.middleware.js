@@ -40,6 +40,17 @@ function createValidationFor(route) {
 			];
 		case "login":
 			return [body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"), body("password").notEmpty().withMessage("Input Password!").isLength({ min: 6 }).withMessage("Must be at Least 6 Chars Long")];
+		case "input-laporan":
+			return [
+				body("title").notEmpty().withMessage("Input title!"),
+				body("category").notEmpty().withMessage("Input category!"),
+				body("subcategory").notEmpty().withMessage("Input subcategory!"),
+				body("content").notEmpty().withMessage("Input content!"),
+			];
+		case "input-balasan":
+			return [body("id_laporan").notEmpty().withMessage("Input id_laporan!"), body("content").notEmpty().withMessage("Input content!")];
+		case "update-balasan":
+			return [body("content").notEmpty().withMessage("Input content!")];
 		default:
 			return [];
 	}

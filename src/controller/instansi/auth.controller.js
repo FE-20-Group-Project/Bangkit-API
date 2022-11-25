@@ -4,6 +4,7 @@ import AdminDB from "../../../database/db/admins.db.js";
 import InstansiDB from "../../../database/db/instansi.db.js";
 import UserDB from "../../../database/db/users.db.js";
 import { getHashedPassword } from "../../../lib/crypto.js";
+import { client } from "../../../database/connect/redis.connect.js";
 
 export default class InstansiAuthController extends InstansiDB {
 	constructor() {
@@ -71,6 +72,22 @@ export default class InstansiAuthController extends InstansiDB {
 					});
 				});
 			})(req, res, next);
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });
+		}
+	}
+
+	async logoutInstansi(req, res, next) {
+		try {
+			let token = req.headers.authorization.split(" ")[1];
+			let token_object = jwt.verify(token, process.env.JWT_KEY);
+			await client.set(`jwt_bl_${token}`, token);
+			client.expireAt(`jwt_bl_${token}`, token_object.exp);
+			return res.status(200).send({
+				status: res.statusCode,
+				message: `Logout Sukses, Token invalidated`,
+			});
 		} catch (error) {
 			console.log(error);
 			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });

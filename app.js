@@ -15,6 +15,7 @@ import routerAuthInstansi from "./src/router/instansi/auth.router.js";
 import instansiLokerRouter from "./src/router/instansi/loker.router.js";
 import userLokerRouter from "./src/router/user/loker.router.js";
 import adminLokerRouter from "./src/router/admin/loker.router.js";
+import laporanRouter from "./src/router/laporan/laporan.router.js";
 
 const PORT = process.env.PORT || 8181;
 const app = express();
@@ -50,6 +51,8 @@ app.use("/api/instansi/auth", routerAuthInstansi);
 app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
 app.use("/api/user/loker", passport.authenticate("jwt-user", { session: false }), userLokerRouter);
 app.use("/api/admin/loker", passport.authenticate("jwt-admin", { session: false }), adminLokerRouter);
+
+app.use("/api/laporan", laporanRouter);
 
 app.listen(PORT, () => {
 	const conn = new Mongo();

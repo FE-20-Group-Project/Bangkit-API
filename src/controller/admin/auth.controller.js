@@ -2,6 +2,7 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 import AdminDB from "../../../database/db/admins.db.js";
 import { getHashedPassword } from "../../../lib/crypto.js";
+import { client } from "../../../database/connect/redis.connect.js";
 import UserDB from "../../../database/db/users.db.js";
 import InstansiDB from "../../../database/db/instansi.db.js";
 
@@ -71,6 +72,22 @@ export default class AdminAuthController extends AdminDB {
 					});
 				});
 			})(req, res, next);
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });
+		}
+	}
+
+	async logoutAdmin(req, res, next) {
+		try {
+			let token = req.headers.authorization.split(" ")[1];
+			let token_object = jwt.verify(token, process.env.JWT_KEY);
+			await client.set(`jwt_bl_${token}`, token);
+			client.expireAt(`jwt_bl_${token}`, token_object.exp);
+			return res.status(200).send({
+				status: res.statusCode,
+				message: `Logout Sukses, Token invalidated`,
+			});
 		} catch (error) {
 			console.log(error);
 			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });
