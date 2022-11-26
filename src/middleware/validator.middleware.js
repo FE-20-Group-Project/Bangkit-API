@@ -58,12 +58,12 @@ function createValidationFor(route) {
 				body("positionName").notEmpty().withMessage("Input position name!"),
 				body("desc").notEmpty().withMessage("Input description!"),
 				body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"),
-				body("image").notEmpty().withMessage("Input company image!").isURL().withMessage("Input must be in URL form"),
 				body("category").notEmpty().withMessage("Input job category!").isArray().withMessage("Input must be array!"),
 				body("location").notEmpty().withMessage("Input company location!"),
 				body("salary").notEmpty().withMessage("Input salary!"),
 				body("qualification").notEmpty().withMessage("Input company qualification!"),
 				body("workType").notEmpty().withMessage("Input company work type!"),
+				body("expired").notEmpty().withMessage("Input total day before expired!"),
 			];
 		default:
 			return [];
