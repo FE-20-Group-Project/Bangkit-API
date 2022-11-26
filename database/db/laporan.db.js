@@ -1,4 +1,6 @@
 import toMs from "ms";
+import ms from "parse-ms";
+import fs from "fs";
 import Laporan from "../models/laporan.model.js";
 import { moment } from "../../lib/moment.js";
 import mongoose from "mongoose";
@@ -11,9 +13,9 @@ export default class LaporanDB {
 		this.laporan = Laporan;
 	}
 
-	async createLaporanDB(user, title, category, subcategory, content) {
+	async createLaporanDB(user, title, category, subcategory, content, image) {
 		const date = moment().format("DD/MM/YY HH:mm:ss");
-		const data = await this.laporan.create({ user, title, category, subcategory, content, date, update: date, status: "posted", total_view: 0, expired: Date.now() + toMs("7d"), reply: [] });
+		const data = await this.laporan.create({ user, title, category, subcategory, content, date, update: date, status: "posted", total_view: 0, expired: Date.now() + toMs("7d"), reply: [], image });
 		return data.populate("user", "-password");
 	}
 
@@ -29,17 +31,46 @@ export default class LaporanDB {
 		}
 	}
 
-	async deleteOne(_id) {
-		await this.laporan.findByIdAndDelete(_id);
+	async findAllLaporan() {
+		const array = await this.laporan.find().populate("user", "-password");
+		let fix = [];
+		for (let i = 0; i < array.length; i++) {
+			const arr = await this.getReply(array[i].reply);
+			let obj = array[i];
+			obj.reply = undefined;
+			fix.push({ laporan: obj, reply: arr });
+		}
+		return fix;
 	}
 
-	async updateLaporan(_id, title, category, subcategory, content) {
-		const date = moment().format("DD/MM/YY HH:mm:ss");
-		const datas = await this.laporan.findOneAndUpdate(mongoose.Types.ObjectId(_id), { title, category, subcategory, content, update: date }, { new: true }).populate("user", "-password");
-		const arr = await this.getReply(datas.reply);
-		let obj = datas;
-		obj.reply = undefined;
-		return { laporan: obj, reply: arr };
+	async deleteOne(_id) {
+		const data = await this.laporan.findOne({ _id });
+		if (data) {
+			data.image.forEach((v) => {
+				fs.unlinkSync(`./public${v}`);
+			});
+			data.reply.forEach((v) => {
+				v.image.forEach((v2) => {
+					fs.unlinkSync(`./public${v2}`);
+				});
+			});
+			await this.laporan.findByIdAndDelete(_id);
+		}
+	}
+
+	async updateLaporan(_id, title, category, subcategory, content, image) {
+		const data = await this.laporan.findOne({ _id });
+		if (data) {
+			data.image.forEach((v) => {
+				fs.unlinkSync(`./public${v}`);
+			});
+			const date = moment().format("DD/MM/YY HH:mm:ss");
+			const datas = await this.laporan.findOneAndUpdate(mongoose.Types.ObjectId(_id), { title, category, subcategory, content, update: date, image }, { new: true }).populate("user", "-password");
+			const arr = await this.getReply(datas.reply);
+			let obj = datas;
+			obj.reply = undefined;
+			return { laporan: obj, reply: arr };
+		}
 	}
 
 	async getUser(_id) {
@@ -70,9 +101,9 @@ export default class LaporanDB {
 		return { laporan: obj, reply: arr };
 	}
 
-	async createReply(user, _id, content) {
+	async createReply(user, _id, content, image) {
 		const date = moment().format("DD/MM/YY HH:mm:ss");
-		const data = await this.laporan.findOneAndUpdate(_id, { $push: { reply: { user, content, date, update: date } } }, { new: true }).populate("user", "-password");
+		const data = await this.laporan.findOneAndUpdate({ _id }, { $push: { reply: { user, content, date, update: date, image } } }, { new: true }).populate("user", "-password");
 		const arr = await this.getReply(data.reply);
 		let obj = data;
 		obj.reply = undefined;
@@ -90,15 +121,39 @@ export default class LaporanDB {
 		}
 	}
 
-	async updateReply(_id, content) {
-		const date = moment().format("DD/MM/YY HH:mm:ss");
-		const updates = await this.laporan.findOneAndUpdate({ "reply._id": _id }, { $set: { "reply.$.content": content, "reply.$.update": date } }, { new: true }).populate("user", "-password");
-		const index = updates.reply.findIndex((x) => x._id == _id);
-		return updates.reply[index];
+	async updateReply(_id, content, image) {
+		const data = await this.laporan.findOne({ reply: { $elemMatch: { _id } } });
+		if (data) {
+			const i = data.reply.findIndex((x) => x._id == _id);
+			data.reply[i].image.forEach((v) => {
+				fs.unlinkSync(`./public${v}`);
+			});
+			const date = moment().format("DD/MM/YY HH:mm:ss");
+			const updates = await this.laporan.findOneAndUpdate({ "reply._id": _id }, { $set: { "reply.$.content": content, "reply.$.update": date, "reply.$.image": image } }, { new: true }).populate("user", "-password");
+			const index = updates.reply.findIndex((x) => x._id == _id);
+			return updates.reply[index];
+		}
 	}
 
 	async deleteOneReply(_id) {
-		const now = await this.laporan.findOneAndUpdate({ "reply._id": _id }, { $pull: { reply: { _id } } }, { new: true }).populate("user", "-password");
-		return now;
+		const data = await this.laporan.findOne({ reply: { $elemMatch: { _id } } });
+		if (data) {
+			const index = data.reply.findIndex((x) => x._id == _id);
+			data.reply[index].image.forEach((v) => {
+				fs.unlinkSync(`./public${v}`);
+			});
+			const now = await this.laporan.findOneAndUpdate({ "reply._id": _id }, { $pull: { reply: { _id } } }, { new: true }).populate("user", "-password");
+			return now;
+		}
+	}
+
+	async expiredLaporan() {
+		const datas = await this.laporan.find();
+		datas.forEach(async (v) => {
+			let dateObj = ms(v.expired - Date.now());
+			if (Math.sign(dateObj.seconds) === -1 && v.status == "posted") {
+				await this.laporan.findOneAndUpdate(v._id, { status: "expired" });
+			}
+		});
 	}
 }

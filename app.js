@@ -4,27 +4,25 @@ import passport from "passport";
 import morgan from "morgan";
 import cors from "cors";
 import fileUpload from "express-fileupload";
+import schedule from "node-schedule";
 
 import Mongo from "./database/connect/mongo.connect.js";
 import { Redis } from "./database/connect/redis.connect.js";
+import LaporanDB from "./database/db/laporan.db.js";
+
 import passp from "./src/middleware/passport.middleware.js";
 
 import routerMain from "./src/router/index.js";
 
-// import routerUser from "./src/router/user/user.router.js";
-// import routerInstansi from "./src/router/instansi/instansi.router.js";
-// import routerAdmin from "./src/router/admin/admin.router.js";
-
 // import instansiLokerRouter from "./src/router/instansi/loker.router.js";
 // import userLokerRouter from "./src/router/user/loker.router.js";
 // import adminLokerRouter from "./src/router/admin/loker.router.js";
-// import laporanRouter from "./src/router/laporan/laporan.router.js";
 
 // import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
 // import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
 // import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
 
-import artikelRouter from "./src/router/artikel/artikel.router.js";
+// import artikelRouter from "./src/router/artikel/artikel.router.js";
 
 const PORT = process.env.PORT || 8181;
 const app = express();
@@ -55,36 +53,23 @@ passp(passport);
 
 app.use("/", routerMain);
 
-// app.get("/", (req, res) => {
-// 	res.status(200).send({
-// 		status: res.statusCode,
-// 		message: `API Aktif`,
-// 	});
-// });
-
-// app.use("/api/user", routerUser);
-// app.use("/api/instansi", routerInstansi);
-// app.use("/api/admin", routerAdmin);
-
 // app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
 // app.use("/api/user/loker", passport.authenticate("jwt-user", { session: false }), userLokerRouter);
 // app.use("/api/admin/loker", passport.authenticate("jwt-admin", { session: false }), adminLokerRouter);
-
-// app.use("/api/laporan", laporanRouter);
 
 // app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", { session: false }), beasiswaAdminRouter);
 // app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", { session: false }), beasiswaInstansiRouter);
 // app.use("/api/user/beasiswa", passport.authenticate("jwt-user", { session: false }), beasiswaUserRouter);
 
-app.use("/api/artikel", passport.authenticate("jwt-admin", {session: false}), artikelRouter);
-
-
-
+// app.use("/api/artikel", passport.authenticate("jwt-admin", { session: false }), artikelRouter);
 
 app.listen(PORT, () => {
 	const conn = new Mongo();
 	conn.connection();
 	const redisConn = new Redis();
 	redisConn.connect();
+	schedule.scheduleJob("* * * * *", async () => {
+		await new LaporanDB().expiredLaporan();
+	});
 	console.log(`[SERVER] App Listen PORT : ${PORT}`);
 });
