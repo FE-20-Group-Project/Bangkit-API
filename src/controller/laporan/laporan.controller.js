@@ -1,5 +1,7 @@
+import path from "path";
 import LaporanDB from "../../../database/db/laporan.db.js";
 import UserDB from "../../../database/db/users.db.js";
+import { randomText } from "../../../lib/random.js";
 
 export default class LaporanUserController extends LaporanDB {
 	constructor() {
@@ -18,7 +20,23 @@ export default class LaporanUserController extends LaporanDB {
 						message: "Oops anda telah di block!",
 					});
 				}
-				const createLaporan = await this.createLaporanDB(data._id, title, category, subcategory, content);
+				let arrDest = [];
+				if (req.files && Object.keys(req.files).length !== 0) {
+					const file = req.files.laporan;
+					if (Array.isArray(req.files.laporan)) {
+						file.forEach(async (v) => {
+							var dest = `./public/laporan/${randomText(15)}${path.extname(v.name)}`;
+							arrDest.push(dest.split("public")[1]);
+							await v.mv(dest);
+						});
+					} else {
+						var dest = `./public/laporan/${randomText(15)}${path.extname(file.name)}`;
+						arrDest.push(dest.split("public")[1]);
+						await file.mv(dest);
+					}
+				}
+
+				const createLaporan = await this.createLaporanDB(data._id, title, category, subcategory, content, arrDest);
 				return res.status(200).send({
 					status: res.statusCode,
 					message: "Sukses Create Laporan",
@@ -59,12 +77,26 @@ export default class LaporanUserController extends LaporanDB {
 		}
 	}
 
+	async getAllLaporan(req, res, next) {
+		try {
+			const data = await this.findAllLaporan();
+			return res.status(200).send({
+				status: res.statusCode,
+				message: `Sukses Get All Laporan`,
+				data,
+			});
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });
+		}
+	}
+
 	async deleteOneLaporan(req, res, next) {
 		try {
 			const { id } = req.params;
 			const data = await this.findOneById(id);
 			if (data) {
-				if (data.user.email == req.user.email) {
+				if (data.laporan.user.email == req.user.email) {
 					if (req.user.isBlocked) {
 						return res.status(423).send({
 							status: res.statusCode,
@@ -100,15 +132,30 @@ export default class LaporanUserController extends LaporanDB {
 			const { title, content, category, subcategory } = req.body;
 			const data = await this.findOneById(id);
 			if (data) {
-				if (data.user.email == req.user.email) {
+				if (data.laporan.user.email == req.user.email) {
 					if (req.user.isBlocked) {
 						return res.status(423).send({
 							status: res.statusCode,
 							message: "Oops anda telah di block!",
 						});
 					}
+					let arrDest = [];
+					if (req.files && Object.keys(req.files).length !== 0) {
+						const file = req.files.laporan;
+						if (Array.isArray(req.files.laporan)) {
+							file.forEach(async (v) => {
+								var dest = `./public/laporan/${randomText(15)}${path.extname(v.name)}`;
+								arrDest.push(dest.split("public")[1]);
+								await v.mv(dest);
+							});
+						} else {
+							var dest = `./public/laporan/${randomText(15)}${path.extname(file.name)}`;
+							arrDest.push(dest.split("public")[1]);
+							await file.mv(dest);
+						}
+					}
 					const obj = { title: title ? title : data.title, content: content ? content : data.content, category: category ? category : data.category, subcategory: subcategory ? subcategory : data.subcategory };
-					const updates = await this.updateLaporan(id, obj.title, obj.category, obj.subcategory, obj.content);
+					const updates = await this.updateLaporan(id, obj.title, obj.category, obj.subcategory, obj.content, arrDest);
 					return res.status(200).send({
 						status: res.statusCode,
 						message: `Sukses Update One Laporan : ${id}`,

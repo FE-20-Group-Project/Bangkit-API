@@ -30,6 +30,7 @@ export default class RegisterController {
 					message: `Email Sudah Pernah Terdaftar Sebelumnya!`,
 				});
 			} else {
+				const hashed = getHashedPassword(password);
 				if (req.files && Object.keys(req.files).length !== 0) {
 					const file = req.files.file;
 					var dest = `./public/profile/${randomText(15)}${path.extname(file.name)}`;
@@ -37,7 +38,6 @@ export default class RegisterController {
 				} else {
 					var dest = `./public/profile/none.png`;
 				}
-				const hashed = getHashedPassword(password);
 				const data = await this.user.createUser(name, email, hashed, contact, dest.split("public")[1]);
 				return res.status(200).send({
 					status: res.statusCode,
@@ -79,6 +79,7 @@ export default class RegisterController {
 					message: `Email Sudah Pernah Terdaftar Sebelumnya!`,
 				});
 			} else {
+				const hashed = getHashedPassword(password);
 				if (req.files.file && Object.keys(req.files?.file).length !== 0) {
 					const file = req.files.file;
 					var dest = `./public/profile/${randomText(15)}${path.extname(file.name)}`;
@@ -86,7 +87,6 @@ export default class RegisterController {
 				} else {
 					var dest = `./public/profile/none.png`;
 				}
-				const hashed = getHashedPassword(password);
 				const data = await this.instansi.createInstansi(name, email, hashed, dest.split("public")[1], destDoc.split("public")[1]);
 				return res.status(200).send({
 					status: res.statusCode,

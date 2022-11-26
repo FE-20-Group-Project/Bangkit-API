@@ -43,12 +43,17 @@ const LaporanSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
+		image: {
+			type: Array,
+			required: true,
+		},
 		reply: [
 			{
 				user: { type: mongoose.ObjectId, required: true },
 				content: { type: String, required: true },
 				date: { type: String, required: true },
 				update: { type: String, required: true },
+				image: { type: Array, required: true },
 			},
 		],
 	},

@@ -10,6 +10,10 @@ router.post("/", passport.authenticate("jwt-user", { session: false }), createVa
 	await controller.createLaporan(req, res, next);
 });
 
+router.get("/", async (req, res, next) => {
+	await controller.getAllLaporan(req, res, next);
+});
+
 router.get("/:id", async (req, res, next) => {
 	await controller.getOneLaporan(req, res, next);
 });

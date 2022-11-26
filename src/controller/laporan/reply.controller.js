@@ -1,4 +1,6 @@
+import path from "path";
 import LaporanDB from "../../../database/db/laporan.db.js";
+import { randomText } from "../../../lib/random.js";
 
 export default class ReplyController extends LaporanDB {
 	constructor() {
@@ -16,7 +18,22 @@ export default class ReplyController extends LaporanDB {
 						message: "Oops anda telah di block!",
 					});
 				}
-				const postReply = await this.createReply(req.user._id, id_laporan, content);
+				let arrDest = [];
+				if (req.files && Object.keys(req.files).length !== 0) {
+					const file = req.files.balasan;
+					if (Array.isArray(req.files.balasan)) {
+						file.forEach(async (v) => {
+							var dest = `./public/balasan/${randomText(15)}${path.extname(v.name)}`;
+							arrDest.push(dest.split("public")[1]);
+							await v.mv(dest);
+						});
+					} else {
+						var dest = `./public/balasan/${randomText(15)}${path.extname(file.name)}`;
+						arrDest.push(dest.split("public")[1]);
+						await file.mv(dest);
+					}
+				}
+				const postReply = await this.createReply(req.user._id, id_laporan, content, arrDest);
 				return res.status(200).send({
 					status: res.statusCode,
 					message: `Sukses Reply One Laporan : ${id_laporan}`,
@@ -69,7 +86,22 @@ export default class ReplyController extends LaporanDB {
 							message: "Oops anda telah di block!",
 						});
 					}
-					const updateReply = await this.updateReply(id, content);
+					let arrDest = [];
+					if (req.files && Object.keys(req.files).length !== 0) {
+						const file = req.files.balasan;
+						if (Array.isArray(req.files.balasan)) {
+							file.forEach(async (v) => {
+								var dest = `./public/balasan/${randomText(15)}${path.extname(v.name)}`;
+								arrDest.push(dest.split("public")[1]);
+								await v.mv(dest);
+							});
+						} else {
+							var dest = `./public/balasan/${randomText(15)}${path.extname(file.name)}`;
+							arrDest.push(dest.split("public")[1]);
+							await file.mv(dest);
+						}
+					}
+					const updateReply = await this.updateReply(id, content, arrDest);
 					return res.status(200).send({
 						status: res.statusCode,
 						message: `Sukses Reply One Laporan : ${id}`,
