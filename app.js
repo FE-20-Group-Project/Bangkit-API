@@ -9,18 +9,20 @@ import Mongo from "./database/connect/mongo.connect.js";
 import { Redis } from "./database/connect/redis.connect.js";
 import passp from "./src/middleware/passport.middleware.js";
 
-import routerUser from "./src/router/user/user.router.js";
-import routerInstansi from "./src/router/instansi/instansi.router.js";
-import routerAdmin from "./src/router/admin/admin.router.js";
+import routerMain from "./src/router/index.js";
 
-import instansiLokerRouter from "./src/router/instansi/loker.router.js";
-import userLokerRouter from "./src/router/user/loker.router.js";
-import adminLokerRouter from "./src/router/admin/loker.router.js";
-import laporanRouter from "./src/router/laporan/laporan.router.js";
+// import routerUser from "./src/router/user/user.router.js";
+// import routerInstansi from "./src/router/instansi/instansi.router.js";
+// import routerAdmin from "./src/router/admin/admin.router.js";
 
-import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
-import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
-import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
+// import instansiLokerRouter from "./src/router/instansi/loker.router.js";
+// import userLokerRouter from "./src/router/user/loker.router.js";
+// import adminLokerRouter from "./src/router/admin/loker.router.js";
+// import laporanRouter from "./src/router/laporan/laporan.router.js";
+
+// import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
+// import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
+// import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
 
 const PORT = process.env.PORT || 8181;
 const app = express();
@@ -49,26 +51,28 @@ app.use(
 app.use(passport.initialize());
 passp(passport);
 
-app.get("/", (req, res) => {
-	res.status(200).send({
-		status: res.statusCode,
-		message: `API Aktif`,
-	});
-});
+app.use("/", routerMain);
 
-app.use("/api/user", routerUser);
-app.use("/api/instansi", routerInstansi);
-app.use("/api/admin", routerAdmin);
+// app.get("/", (req, res) => {
+// 	res.status(200).send({
+// 		status: res.statusCode,
+// 		message: `API Aktif`,
+// 	});
+// });
 
-app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
-app.use("/api/user/loker", passport.authenticate("jwt-user", { session: false }), userLokerRouter);
-app.use("/api/admin/loker", passport.authenticate("jwt-admin", { session: false }), adminLokerRouter);
+// app.use("/api/user", routerUser);
+// app.use("/api/instansi", routerInstansi);
+// app.use("/api/admin", routerAdmin);
 
-app.use("/api/laporan", laporanRouter);
+// app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
+// app.use("/api/user/loker", passport.authenticate("jwt-user", { session: false }), userLokerRouter);
+// app.use("/api/admin/loker", passport.authenticate("jwt-admin", { session: false }), adminLokerRouter);
 
-app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", { session: false }), beasiswaAdminRouter);
-app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", { session: false }), beasiswaInstansiRouter);
-app.use("/api/user/beasiswa", passport.authenticate("jwt-user", { session: false }), beasiswaUserRouter);
+// app.use("/api/laporan", laporanRouter);
+
+// app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", { session: false }), beasiswaAdminRouter);
+// app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", { session: false }), beasiswaInstansiRouter);
+// app.use("/api/user/beasiswa", passport.authenticate("jwt-user", { session: false }), beasiswaUserRouter);
 
 app.listen(PORT, () => {
 	const conn = new Mongo();

@@ -15,4 +15,10 @@ export default class AdminDB {
 		const result = data ? data : null;
 		return result;
 	}
+
+	async findById(_id) {
+		const data = await this.admin.findOne({ _id });
+		const result = data ? data : null;
+		return result;
+	}
 }

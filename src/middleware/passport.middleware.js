@@ -13,7 +13,7 @@ const ExtractJWT = passportJWT.ExtractJwt;
 
 export default function (passport) {
 	passport.use(
-		"local-user",
+		"local",
 		new Strategy(
 			{
 				usernameField: "email",
@@ -23,73 +23,12 @@ export default function (passport) {
 				const hashed = getHashedPassword(password);
 				return Users.findOne({ email, password: hashed })
 					.then(async (user) => {
-						if (!user) {
-							return cb(null, false, {
-								message: "Incorrect email or password.",
-							});
-						} else {
-							return cb(null, user, {
-								message: "Logged In Successfully",
-							});
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-						cb(err);
-					});
-			}
-		)
-	);
-
-	passport.use(
-		"local-admin",
-		new Strategy(
-			{
-				usernameField: "email",
-				passwordField: "password",
-			},
-			async (email, password, cb) => {
-				const hashed = getHashedPassword(password);
-				return Admins.findOne({ email, password: hashed })
-					.then(async (admin) => {
-						if (!admin) {
-							return cb(null, false, {
-								message: "Incorrect email or password.",
-							});
-						} else {
-							return cb(null, admin, {
-								message: "Logged In Successfully",
-							});
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-						cb(err);
-					});
-			}
-		)
-	);
-
-	passport.use(
-		"local-instansi",
-		new Strategy(
-			{
-				usernameField: "email",
-				passwordField: "password",
-			},
-			async (email, password, cb) => {
-				const hashed = getHashedPassword(password);
-				return Instansi.findOne({ email, password: hashed })
-					.then(async (instansi) => {
-						if (!instansi) {
-							return cb(null, false, {
-								message: "Incorrect email or password.",
-							});
-						} else {
-							return cb(null, instansi, {
-								message: "Logged In Successfully",
-							});
-						}
+						if (user) return cb(null, user, { message: "Logged In Successfully" });
+						const admin = await Admins.findOne({ email, password: hashed });
+						if (admin) return cb(null, admin, { message: "Logged In Successfully" });
+						const instansi = await Instansi.findOne({ email, password: hashed });
+						if (instansi) return cb(null, instansi, { message: "Logged In Successfully" });
+						return cb(null, false, { message: "Incorrect email or password." });
 					})
 					.catch((err) => {
 						console.log(err);
