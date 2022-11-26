@@ -3,8 +3,9 @@ import mongoose, { Schema } from "mongoose";
 const LaporanSchema = new mongoose.Schema(
 	{
 		user: {
-			type: Object,
+			type: mongoose.ObjectId,
 			required: true,
+			ref: "user",
 		},
 		title: {
 			type: String,
@@ -44,7 +45,7 @@ const LaporanSchema = new mongoose.Schema(
 		},
 		reply: [
 			{
-				user: { type: Object, required: true },
+				user: { type: mongoose.ObjectId, required: true },
 				content: { type: String, required: true },
 				date: { type: String, required: true },
 				update: { type: String, required: true },
