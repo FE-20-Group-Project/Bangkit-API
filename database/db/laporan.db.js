@@ -43,6 +43,11 @@ export default class LaporanDB {
 		return fix;
 	}
 
+	async findAllLaporanWithId(_id) {
+		const array = await this.laporan.find({ user: _id, status: "posted" });
+		return array;
+	}
+
 	async deleteOne(_id) {
 		const data = await this.laporan.findOne({ _id });
 		if (data) {
