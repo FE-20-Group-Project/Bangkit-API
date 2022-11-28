@@ -51,7 +51,7 @@ export default class LokerInstansi {
 		}
 	}
 
-	async getLokerByUserID(req, res, next) {
+	async getLokerByInstansi(req, res, next) {
 		try {
 			const params = req.params;
 			const instansi = await Instansi.findOne({ _id: mongoose.Types.ObjectId(params) });
@@ -83,7 +83,7 @@ export default class LokerInstansi {
 			}
 
 			const date = moment().format("DD/MM/YY HH:mm:ss");
-			const data = { companyName, positionName, desc, email, image: req.user.image, category, location, salary, qualification, workType, date, update: date, expired: Date.now() + toMs(`${expired}d`), user: req.user._id };
+			const data = { companyName, positionName, desc, email, image: req.user.image, category, location, salary, qualification, workType, date, update: date, expired: Date.now() + toMs(`${expired}d`), status: "posted", user: req.user._id };
 			const loker = await (await Loker.create(data)).populate("user", "-password");
 			return res.status(200).send({
 				status: res.statusCode,
