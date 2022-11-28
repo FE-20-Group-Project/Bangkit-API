@@ -20,6 +20,15 @@ export default class LaporanUserController extends LaporanDB {
 						message: "Oops anda telah di block!",
 					});
 				}
+				const arrayLaporan = await this.findAllLaporanWithId(req.user._id);
+				console.log(arrayLaporan);
+				if (arrayLaporan.length >= 3) {
+					return res.status(403).send({
+						status: res.statusCode,
+						message: "Oops anda telah membuat laporan 3!",
+					});
+				}
+
 				let arrDest = [];
 				if (req.files && Object.keys(req.files).length !== 0) {
 					const file = req.files.laporan;
