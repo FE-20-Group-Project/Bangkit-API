@@ -70,4 +70,25 @@ export default class UserEdit extends UserDB {
 			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
 		}
 	}
+
+	async getDataUser(req, res, next) {
+		try {
+			const data = await this.findUserById(req.user._id);
+			if (data) {
+				return res.status(200).send({
+					status: res.statusCode,
+					message: "Sukses GET Data User",
+					data: data,
+				});
+			} else {
+				return res.status(404).send({
+					status: res.statusCode,
+					message: "User not found!",
+				});
+			}
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
+		}
+	}
 }

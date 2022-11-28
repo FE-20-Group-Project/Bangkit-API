@@ -1,8 +1,10 @@
+import AdminDB from "../../../database/db/admins.db.js";
 import InstansiDB from "../../../database/db/instansi.db.js";
 import UserDB from "../../../database/db/users.db.js";
 
-export default class EditAdmin {
+export default class EditAdmin extends AdminDB {
 	constructor() {
+		super();
 		this.instansi = new InstansiDB();
 	}
 
@@ -97,6 +99,27 @@ export default class EditAdmin {
 				message: "Get ALL data  Instansi",
 				data,
 			});
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
+		}
+	}
+
+	async getDataAdmin(req, res, next) {
+		try {
+			const data = await this.findById(req.user._id);
+			if (data) {
+				return res.status(200).send({
+					status: res.statusCode,
+					message: "Sukses GET Data Admin",
+					data: data,
+				});
+			} else {
+				return res.status(404).send({
+					status: res.statusCode,
+					message: "Admin not found!",
+				});
+			}
 		} catch (error) {
 			console.log(error);
 			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
