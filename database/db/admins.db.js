@@ -6,7 +6,7 @@ export default class AdminDB {
 	}
 
 	async createAdmin(email, password) {
-		const data = await this.admin.create({ email, password });
+		const data = await this.admin.create({ email, password, type: "admin" });
 		return data;
 	}
 

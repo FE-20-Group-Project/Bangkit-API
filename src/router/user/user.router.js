@@ -10,4 +10,8 @@ router.put("/edit/:id", passport.authenticate("jwt-user", { session: false }), a
 	await controller.updateUser(req, res, next);
 });
 
+router.get("/data/user", passport.authenticate("jwt-user", { session: false }), async (req, res, next) => {
+	await controller.getDataUser(req, res, next);
+});
+
 export default router;

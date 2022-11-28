@@ -17,6 +17,10 @@ const UsersSchema = new mongoose.Schema(
 			required: true,
 			minlength: 6,
 		},
+		type: {
+			type: String,
+			required: true,
+		},
 		contact: {
 			type: String,
 			required: true,

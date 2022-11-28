@@ -10,19 +10,23 @@ router.get("/instansi-status", passport.authenticate("jwt-admin", { session: fal
 	await controller.editStatusInstansi(req, res, next);
 });
 
-router.get("/data/user/all", async (req, res, next) => {
+router.get("/data/admin", passport.authenticate("jwt-admin", { session: false }), async (req, res, next) => {
+	await controller.getDataAdmin(req, res, next);
+});
+
+router.get("/data/user/all", passport.authenticate("jwt-admin", { session: false }), async (req, res, next) => {
 	await controller.getAllUser(req, res, next);
 });
 
-router.get("/data/instansi/all", async (req, res, next) => {
+router.get("/data/instansi/all", passport.authenticate("jwt-admin", { session: false }), async (req, res, next) => {
 	await controller.getAllInstansi(req, res, next);
 });
 
-router.get("/data/user/block", async (req, res, next) => {
+router.get("/data/user/block", passport.authenticate("jwt-admin", { session: false }), async (req, res, next) => {
 	await controller.blockUser(req, res, next);
 });
 
-router.get("/data/instansi/block", async (req, res, next) => {
+router.get("/data/instansi/block", passport.authenticate("jwt-admin", { session: false }), async (req, res, next) => {
 	await controller.blockInstansi(req, res, next);
 });
 
