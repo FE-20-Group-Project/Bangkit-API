@@ -65,6 +65,14 @@ function createValidationFor(route) {
 				body("workType").notEmpty().withMessage("Input company work type!"),
 				body("expired").notEmpty().withMessage("Input total day before expired!"),
 			];
+		case "create-beasiswa-instansi":
+			return [
+				body("name").notEmpty().withMessage("Input beasiswa name!"),
+				body("desc").notEmpty().withMessage("Input description!"),
+				body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"),
+				body("category").notEmpty().withMessage("Input beasiswa category!").isArray().withMessage("Input must be array!"),
+				body("expired").notEmpty().withMessage("Input total day before expired!"),
+			];
 		default:
 			return [];
 	}
