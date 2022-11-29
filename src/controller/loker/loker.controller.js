@@ -84,7 +84,7 @@ export default class LokerInstansi {
 
 	async addLoker(req, res, next) {
 		try {
-			const { companyName, positionName, desc, email, category, location, salary, qualification, workType, expired } = req.body;
+			const { positionName, desc, category, location, salary, qualification, workType, expired } = req.body;
 			const cekStatus = req.user.status;
 			if (cekStatus == "pending") {
 				return res.status(403).send({
@@ -92,12 +92,28 @@ export default class LokerInstansi {
 					message: `Data Instansi sedang Diproses`,
 				});
 			} else {
-				if (!companyName || !positionName || !desc || !email || !category || !location || !salary || !qualification || !workType || !expired) {
+				if (!positionName || !desc || !category || !location || !salary || !qualification || !workType || !expired) {
 					return res.status(400).send({ status: res.statusCode, message: `Bad Request! Input Body!` });
 				}
 
 				const date = moment().format("DD/MM/YY HH:mm:ss");
-				const data = { companyName, positionName, desc, email, image: req.user.image, category, location, salary, qualification, workType, date, update: date, expired: Date.now() + toMs(`${expired}d`), status: "posted", user: req.user._id };
+				const data = {
+					companyName: req.user.name,
+					positionName,
+					desc,
+					email: req.user.email,
+					image: req.user.image,
+					category,
+					location,
+					salary,
+					qualification,
+					workType,
+					date,
+					update: date,
+					expired: Date.now() + toMs(`${expired}d`),
+					status: "posted",
+					user: req.user._id,
+				};
 				const loker = await (await Loker.create(data)).populate("user", "-password");
 				return res.status(200).send({
 					status: res.statusCode,
@@ -144,7 +160,7 @@ export default class LokerInstansi {
 	async updateLokerByID(req, res, next) {
 		try {
 			const { id } = req.params;
-			const { companyName, positionName, desc, email, category, location, salary, qualification, workType, expired } = req.body;
+			const { positionName, desc, category, location, salary, qualification, workType, expired } = req.body;
 			const cekStatus = req.user.status;
 
 			const data = await Loker.findOne({ _id: mongoose.Types.ObjectId({ id }) }).populate("user", "-password");
@@ -158,10 +174,8 @@ export default class LokerInstansi {
 				if (data) {
 					const newDate = moment().format("DD/MM/YY HH:mm:ss");
 					const obj = {
-						companyName: companyName ? companyName : data.companyName,
 						positionName: positionName ? positionName : data.positionName,
 						desc: desc ? desc : data.desc,
-						email: email ? email : data.email,
 						category: category ? category : data.category,
 						location: location ? location : data.location,
 						salary: salary ? salary : data.salary,
