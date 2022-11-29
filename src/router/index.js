@@ -6,6 +6,7 @@ import routerInstansi from "./instansi/instansi.router.js";
 import routerAuth from "./auth/auth.router.js";
 import routerLapor from "./laporan/laporan.router.js";
 import routerReply from "./laporan/reply.router.js";
+import artikelRouter from "./artikel/artikel.router.js"
 import routerLoker from "./loker/loker.router.js";
 
 const router = express.Router();
@@ -27,6 +28,7 @@ router.use("/api/instansi", routerInstansi);
 router.use("/api/auth", routerAuth);
 router.use("/api/laporan/lapor", routerLapor);
 router.use("/api/laporan/reply", routerReply);
+router.use("/api/artikel", artikelRouter);
 router.use("/api/loker", routerLoker);
 
 export default router;

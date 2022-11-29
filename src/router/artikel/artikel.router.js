@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import ArtikelAdmin from "../../controller/admin/artikel.controller.js";
+import ArtikelAdmin from "../../controller/artikel/artikel.controller.js";
 
 const router = express.Router();
 const controller = new ArtikelAdmin();
