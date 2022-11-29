@@ -1,23 +1,33 @@
 import Artikel from "../../../database/models/artikel.model.js";
+import { randomText } from "../../../lib/random.js";
 
 class ArtikelAdmin {
     constructor(){}
     async createArtikel(req, res, next){
         try {
-            const {title, author, content, publish_date, image}=req.body
-            if(!title||!author||!content||!publish_date||!image) {
+            const {title, author, content, publish_date, image} = req.body
+
+            
+            if(!title||!author||!content||!publish_date) {
                 return res.status(400).send({
                     status: res.statusCode,
                     message: `Bad Request, input body!`
                 })
-            }
-            const data = await Artikel.create({title, author, content, publish_date, image})
+            } else {
+				if (req.files && Object.keys(req.files).length !== 0) {
+					const file = req.files.file;
+					var dest = `./public/artikel/${randomText(15)}${path.extname(file.name)}`;
+					await file.mv(dest);
+				} else {
+					var dest = `./public/artikel/default.jpg`;
+				}
+            const data = await Artikel.create({title, author, content, publish_date, image: dest.split("public")[1]})
             return res.status(200).send({
                 status: res.statusCode,
                 message: `Artikel successfully added!`,
                 data,
             })
-            
+        }
         } catch (error) {
             console.log(error)
             return res.status(500).send({
