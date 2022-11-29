@@ -13,6 +13,13 @@ class BeasiswaInstansi {
 					message: "bad request! input body",
 				});
 			}
+			const cekStatus = req.user.status;
+			if (cekStatus == "pending") {
+				return res.status(403).send({
+					status: res.statusCode,
+					message: `Data Instansi sedang Diproses`,
+				});
+			}
 			const date = moment().format("DD/MM/YY HH:mm:ss");
 			const data = { name, instansiName: req.user.name, desc, email, kuota, image: req.user.image, category, date, update: date, expired: Date.now() + toMs(`${expired}d`), status: "posted", user: req.user._id };
 			const beasiswa = await (await Beasiswa.create(data)).populate("user", "-password");
