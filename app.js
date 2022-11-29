@@ -15,12 +15,7 @@ import LokerDB from "./database/db/loker.db.js";
 import passp from "./src/middleware/passport.middleware.js";
 
 import routerMain from "./src/router/index.js";
-
-// import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
-// import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
-// import beasiswaUserRouter from "./src/router/user/beasiswa.router.js";
-
-// import artikelRouter from "./src/router/artikel/artikel.router.js";
+import BeasiswaDB from "./database/db/beasiswa.db.js";
 
 const PORT = process.env.PORT || 8181;
 const app = express();
@@ -51,24 +46,6 @@ passp(passport);
 
 app.use("/", routerMain);
 
-// app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", { session: false }), beasiswaAdminRouter);
-// app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", { session: false }), beasiswaInstansiRouter);
-// app.use("/api/user/beasiswa", passport.authenticate("jwt-user", { session: false }), beasiswaUserRouter);
-
-// app.use("/api/artikel", passport.authenticate("jwt-admin", { session: false }), artikelRouter);
-
-// app.listen(PORT, () => {
-// 	const conn = new Mongo();
-// 	conn.connection();
-// 	const redisConn = new Redis();
-// 	redisConn.connect();
-// 	schedule.scheduleJob("* * * * *", async () => {
-// 		await new LaporanDB().expiredLaporan();
-// 		await new LokerDB().expiredLoker();
-// 	});
-// 	console.log(`[SERVER] App Listen PORT : ${PORT}`);
-// });
-
 const serverHttp = app.listen(PORT, () => {
 	const conn = new Mongo();
 	conn.connection();
@@ -77,6 +54,7 @@ const serverHttp = app.listen(PORT, () => {
 	schedule.scheduleJob("* * * * *", async () => {
 		await new LaporanDB().expiredLaporan();
 		await new LokerDB().expiredLoker();
+		await new BeasiswaDB().expiredBeasiswa();
 	});
 	console.log(`[SERVER] App Listen PORT : ${PORT}`);
 });
