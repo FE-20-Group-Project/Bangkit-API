@@ -14,7 +14,7 @@ const beasiswaSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	contact: {
+	email: {
 		type: String,
 		required: true,
 	},
