@@ -21,7 +21,6 @@ export default class LaporanUserController extends LaporanDB {
 					});
 				}
 				const arrayLaporan = await this.findAllLaporanWithId(req.user._id);
-				console.log(arrayLaporan);
 				if (arrayLaporan.length >= 3) {
 					return res.status(403).send({
 						status: res.statusCode,

@@ -17,6 +17,10 @@ router.get("/", (req, res) => {
 	});
 });
 
+router.get("/test", (req, res) => {
+	res.redirect();
+});
+
 router.use("/api/user", routerUser);
 router.use("/api/admin", routerAdmin);
 router.use("/api/instansi", routerInstansi);

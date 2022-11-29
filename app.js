@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 import schedule from "node-schedule";
+import { Server } from "socket.io";
 
 import Mongo from "./database/connect/mongo.connect.js";
 import { Redis } from "./database/connect/redis.connect.js";
@@ -56,7 +57,19 @@ app.use("/", routerMain);
 
 // app.use("/api/artikel", passport.authenticate("jwt-admin", { session: false }), artikelRouter);
 
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+// 	const conn = new Mongo();
+// 	conn.connection();
+// 	const redisConn = new Redis();
+// 	redisConn.connect();
+// 	schedule.scheduleJob("* * * * *", async () => {
+// 		await new LaporanDB().expiredLaporan();
+// 		await new LokerDB().expiredLoker();
+// 	});
+// 	console.log(`[SERVER] App Listen PORT : ${PORT}`);
+// });
+
+const serverHttp = app.listen(PORT, () => {
 	const conn = new Mongo();
 	conn.connection();
 	const redisConn = new Redis();
@@ -67,3 +80,17 @@ app.listen(PORT, () => {
 	});
 	console.log(`[SERVER] App Listen PORT : ${PORT}`);
 });
+
+const io = new Server(serverHttp, {
+	cors: {
+		origin: "*",
+	},
+});
+const socket = io.on("connection", (socket) => {
+	socket.on("disconnect", () => {
+		console.log("Socket Disconnect");
+	});
+	return socket;
+});
+
+export { socket };

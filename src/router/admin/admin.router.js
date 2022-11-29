@@ -10,10 +10,6 @@ router.get("/instansi-status", passport.authenticate("jwt-admin", { session: fal
 	await controller.editStatusInstansi(req, res, next);
 });
 
-router.get("/data/admin", passport.authenticate("jwt-admin", { session: false }), async (req, res, next) => {
-	await controller.getDataAdmin(req, res, next);
-});
-
 router.get("/data/user/all", passport.authenticate("jwt-admin", { session: false }), async (req, res, next) => {
 	await controller.getAllUser(req, res, next);
 });
