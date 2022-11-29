@@ -22,6 +22,10 @@ router.put("/:id", passport.authenticate("jwt-user", { session: false }), async 
 	await controller.updateOneLaporan(req, res, next);
 });
 
+router.delete("/", async (req, res, next) => {
+	await controller.deleteManyLaporan(req, res, next);
+});
+
 router.delete("/:id", passport.authenticate("jwt-user", { session: false }), async (req, res, next) => {
 	await controller.deleteOneLaporan(req, res, next);
 });

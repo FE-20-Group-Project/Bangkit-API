@@ -99,6 +99,20 @@ export default class LaporanUserController extends LaporanDB {
 		}
 	}
 
+	async deleteManyLaporan(req, res, next) {
+		try {
+			const data = await this.deleteAllLaporan();
+			return res.status(200).send({
+				status: res.statusCode,
+				message: `Sukses Delete All Laporan`,
+				data,
+			});
+		} catch (error) {
+			console.log(error);
+			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });
+		}
+	}
+
 	async deleteOneLaporan(req, res, next) {
 		try {
 			const { id } = req.params;

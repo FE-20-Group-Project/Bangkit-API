@@ -6,8 +6,8 @@ class BeasiswaInstansi {
 	constructor() {}
 	async createBeasiswa(req, res, next) {
 		try {
-			const { name, desc, email, kuota, category, expired } = req.body;
-			if (!name || !desc || !email || !kuota || !category || !expired) {
+			const { name, desc, kuota, category, expired } = req.body;
+			if (!name || !desc || !kuota || !category || !expired) {
 				return res.status(400).send({
 					status: res.statusCode,
 					message: "bad request! input body",
@@ -21,7 +21,7 @@ class BeasiswaInstansi {
 				});
 			}
 			const date = moment().format("DD/MM/YY HH:mm:ss");
-			const data = { name, instansiName: req.user.name, desc, email, kuota, image: req.user.image, category, date, update: date, expired: Date.now() + toMs(`${expired}d`), status: "posted", user: req.user._id };
+			const data = { name, instansiName: req.user.name, desc, email: req.user.email, kuota, image: req.user.image, category, date, update: date, expired: Date.now() + toMs(`${expired}d`), status: "posted", user: req.user._id };
 			const beasiswa = await (await Beasiswa.create(data)).populate("user", "-password");
 			return res.status(200).send({
 				status: res.statusCode,
