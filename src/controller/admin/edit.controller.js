@@ -104,25 +104,4 @@ export default class EditAdmin extends AdminDB {
 			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
 		}
 	}
-
-	async getDataAdmin(req, res, next) {
-		try {
-			const data = await this.findById(req.user._id);
-			if (data) {
-				return res.status(200).send({
-					status: res.statusCode,
-					message: "Sukses GET Data Admin",
-					data: data,
-				});
-			} else {
-				return res.status(404).send({
-					status: res.statusCode,
-					message: "Admin not found!",
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
-		}
-	}
 }

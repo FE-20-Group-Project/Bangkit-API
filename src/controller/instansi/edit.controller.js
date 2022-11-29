@@ -70,25 +70,4 @@ export default class InstansiEdit extends InstansiDB {
 			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
 		}
 	}
-
-	async getDataInstansi(req, res, next) {
-		try {
-			const data = await this.findInstansiById(req.user._id);
-			if (data) {
-				return res.status(200).send({
-					status: res.statusCode,
-					message: "Sukses GET Data Instansi",
-					data: data,
-				});
-			} else {
-				return res.status(404).send({
-					status: res.statusCode,
-					message: "Instansi not found!",
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			return res.status(500).send({ status: res.statusCode, message: "Internal Server Error" });
-		}
-	}
 }
