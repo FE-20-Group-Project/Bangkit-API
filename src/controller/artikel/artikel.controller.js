@@ -7,7 +7,6 @@ class ArtikelAdmin {
         try {
             const {title, author, content, publish_date, image} = req.body
 
-            
             if(!title||!author||!content||!publish_date) {
                 return res.status(400).send({
                     status: res.statusCode,
@@ -83,19 +82,25 @@ class ArtikelAdmin {
         try {
             const {_id} = req.params
             const {title, author, content, publish_date, image}=req.body
+
             const data = await Artikel.findOne({_id})
             if(data){
                 const titlex = title?title: data.title
                 const authorx = author?author: data.author
                 const contentx = content?content: data.content
                 const publish_datex = publish_date?publish_date: data.publish_date
-                const imagex = image?image: data.image
-                const dataUpdate = await Artikel.findOneAndUpdate({_id},{title:titlex, author:authorx, content:contentx, publish_date:publish_datex, image:imagex}, {new:true})
+                if (req.files && Object.keys(req.files).length !== 0) {
+					const file = req.files.file;
+					var dest = `./public/artikel/${randomText(15)}${path.extname(file.name)}`;
+					await file.mv(dest);
+                }
+                const dataUpdate = await Artikel.findOneAndUpdate({_id},{title:titlex, author:authorx, content:contentx, publish_date:publish_datex, image:dest.split("public")[1]}, {new:true})
                 return res.status(200).send({
                 status: res.statusCode,
                 message: 'Article Successfully Updated',
                 data: dataUpdate,
             }) 
+
             } else {
                 return res.status(404).send({
                     status: res.statusCode,
