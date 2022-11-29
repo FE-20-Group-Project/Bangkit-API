@@ -45,7 +45,7 @@ export default class UserEdit extends UserDB {
 					const instansi = await new InstansiDB().findByEmail(email);
 					const admin = await new AdminDB().findByEmail(email);
 					const user = await this.findByEmail(email);
-					if (admin || instansi || user) {
+					if (admin || instansi || (user && user?.email !== req.user.email)) {
 						return res.status(400).send({
 							status: res.statusCode,
 							message: `Email Sudah Pernah Terdaftar Sebagai User atau Role Lain!`,

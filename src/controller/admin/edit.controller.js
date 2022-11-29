@@ -1,8 +1,10 @@
+import AdminDB from "../../../database/db/admins.db.js";
 import InstansiDB from "../../../database/db/instansi.db.js";
 import UserDB from "../../../database/db/users.db.js";
 
-export default class EditAdmin {
+export default class EditAdmin extends AdminDB {
 	constructor() {
+		super();
 		this.instansi = new InstansiDB();
 	}
 

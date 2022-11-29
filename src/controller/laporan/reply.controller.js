@@ -1,4 +1,5 @@
 import path from "path";
+import { socket } from "../../../app.js";
 import LaporanDB from "../../../database/db/laporan.db.js";
 import { randomText } from "../../../lib/random.js";
 
@@ -34,11 +35,13 @@ export default class ReplyController extends LaporanDB {
 					}
 				}
 				const postReply = await this.createReply(req.user._id, id_laporan, content, arrDest);
-				return res.status(200).send({
+				res.status(200).send({
 					status: res.statusCode,
 					message: `Sukses Reply One Laporan : ${id_laporan}`,
 					data: postReply,
 				});
+				const dataNow = await this.findOneById(id_laporan);
+				return socket.emit(`laporan`, { id_laporan, data: dataNow });
 			} else {
 				return res.status(404).send({
 					status: res.statusCode,
@@ -76,7 +79,7 @@ export default class ReplyController extends LaporanDB {
 	async updateBalasan(req, res, next) {
 		try {
 			const { id } = req.params;
-			const { content } = req.body;
+			const { content, id_laporan } = req.body;
 			const dataBalasan = await this.findReplyId(id);
 			if (dataBalasan) {
 				if (req.user.email == dataBalasan.data_user.email) {
@@ -102,11 +105,13 @@ export default class ReplyController extends LaporanDB {
 						}
 					}
 					const updateReply = await this.updateReply(id, content, arrDest);
-					return res.status(200).send({
+					res.status(200).send({
 						status: res.statusCode,
 						message: `Sukses Reply One Laporan : ${id}`,
 						data: updateReply,
 					});
+					const dataNow = await this.findOneById(id_laporan);
+					return socket.emit(`laporan`, { id_laporan, data: dataNow });
 				} else {
 					return res.status(404).send({
 						status: res.statusCode,

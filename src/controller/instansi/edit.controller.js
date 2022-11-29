@@ -45,7 +45,7 @@ export default class InstansiEdit extends InstansiDB {
 					const instansi = await this.findByEmail(email);
 					const admin = await new AdminDB().findByEmail(email);
 					const user = await new UserDB().findByEmail(email);
-					if (admin || instansi || user) {
+					if (admin || (instansi && instansi?.email !== req.user.email) || user) {
 						return res.status(400).send({
 							status: res.statusCode,
 							message: `Email Sudah Pernah Terdaftar Sebagai Instansi atau Role Lain!`,

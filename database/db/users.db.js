@@ -6,7 +6,7 @@ export default class UserDB {
 	}
 
 	async createUser(name, email, password, contact, image) {
-		const data = await this.user.create({ name, email, password, contact, image, isBlocked: false });
+		const data = await this.user.create({ name, email, password, contact, image, isBlocked: false, type: "user" });
 		return data;
 	}
 

@@ -6,7 +6,7 @@ export default class InstansiDB {
 	}
 
 	async createInstansi(name, email, password, image, dokumen) {
-		const data = await this.instansi.create({ name, email, password, image, status: "pending", isBlocked: false, dokumen });
+		const data = await this.instansi.create({ name, email, password, image, status: "pending", isBlocked: false, dokumen, type: "instansi" });
 		return data;
 	}
 

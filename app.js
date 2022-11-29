@@ -5,18 +5,16 @@ import morgan from "morgan";
 import cors from "cors";
 import fileUpload from "express-fileupload";
 import schedule from "node-schedule";
+import { Server } from "socket.io";
 
 import Mongo from "./database/connect/mongo.connect.js";
 import { Redis } from "./database/connect/redis.connect.js";
 import LaporanDB from "./database/db/laporan.db.js";
+import LokerDB from "./database/db/loker.db.js";
 
 import passp from "./src/middleware/passport.middleware.js";
 
 import routerMain from "./src/router/index.js";
-
-// import instansiLokerRouter from "./src/router/instansi/loker.router.js";
-// import userLokerRouter from "./src/router/user/loker.router.js";
-// import adminLokerRouter from "./src/router/admin/loker.router.js";
 
 // import beasiswaAdminRouter from "./src/router/admin/beasiswa.router.js";
 // import beasiswaInstansiRouter from "./src/router/instansi/beasiswa.router.js";
@@ -53,23 +51,46 @@ passp(passport);
 
 app.use("/", routerMain);
 
-// app.use("/api/instansi/loker", passport.authenticate("jwt-instansi", { session: false }), instansiLokerRouter);
-// app.use("/api/user/loker", passport.authenticate("jwt-user", { session: false }), userLokerRouter);
-// app.use("/api/admin/loker", passport.authenticate("jwt-admin", { session: false }), adminLokerRouter);
-
 // app.use("/api/admin/beasiswa", passport.authenticate("jwt-admin", { session: false }), beasiswaAdminRouter);
 // app.use("/api/instansi/beasiswa", passport.authenticate("jwt-instansi", { session: false }), beasiswaInstansiRouter);
 // app.use("/api/user/beasiswa", passport.authenticate("jwt-user", { session: false }), beasiswaUserRouter);
 
 // app.use("/api/artikel", passport.authenticate("jwt-admin", { session: false }), artikelRouter);
 
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+// 	const conn = new Mongo();
+// 	conn.connection();
+// 	const redisConn = new Redis();
+// 	redisConn.connect();
+// 	schedule.scheduleJob("* * * * *", async () => {
+// 		await new LaporanDB().expiredLaporan();
+// 		await new LokerDB().expiredLoker();
+// 	});
+// 	console.log(`[SERVER] App Listen PORT : ${PORT}`);
+// });
+
+const serverHttp = app.listen(PORT, () => {
 	const conn = new Mongo();
 	conn.connection();
 	const redisConn = new Redis();
 	redisConn.connect();
 	schedule.scheduleJob("* * * * *", async () => {
 		await new LaporanDB().expiredLaporan();
+		await new LokerDB().expiredLoker();
 	});
 	console.log(`[SERVER] App Listen PORT : ${PORT}`);
 });
+
+const io = new Server(serverHttp, {
+	cors: {
+		origin: "*",
+	},
+});
+const socket = io.on("connection", (socket) => {
+	socket.on("disconnect", () => {
+		console.log("Socket Disconnect");
+	});
+	return socket;
+});
+
+export { socket };
