@@ -63,6 +63,10 @@ export default class LaporanDB {
 		}
 	}
 
+	async deleteAllLaporan() {
+		await this.laporan.deleteMany();
+	}
+
 	async updateLaporan(_id, title, category, subcategory, content, image) {
 		const data = await this.laporan.findOne({ _id });
 		if (data) {
