@@ -91,10 +91,10 @@ class ArtikelAdmin {
                 const publish_datex = publish_date?publish_date: data.publish_date
                 if (req.files && Object.keys(req.files).length !== 0) {
 					const file = req.files.file;
-					var dest = `./public/artikel/${randomText(15)}${path.extname(file.name)}`;
+					var dest = `./public/${data.image}`;
 					await file.mv(dest);
                 }
-                const dataUpdate = await Artikel.findOneAndUpdate({_id},{title:titlex, author:authorx, content:contentx, publish_date:publish_datex, image:dest.split("public")[1]}, {new:true})
+                const dataUpdate = await Artikel.findOneAndUpdate({_id},{title:titlex, author:authorx, content:contentx, publish_date:publish_datex}, {new:true})
                 return res.status(200).send({
                 status: res.statusCode,
                 message: 'Article Successfully Updated',
