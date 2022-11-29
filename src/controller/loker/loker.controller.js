@@ -86,7 +86,7 @@ export default class LokerInstansi {
 		try {
 			const { companyName, positionName, desc, email, category, location, salary, qualification, workType, expired } = req.body;
 			const cekStatus = req.user.status;
-			if (cekStatus == "pendings") {
+			if (cekStatus == "pending") {
 				return res.status(403).send({
 					status: res.statusCode,
 					message: `Data Instansi sedang Diproses`,
