@@ -74,8 +74,8 @@ export default class LaporanUserController extends LaporanDB {
 					message: `Sukses Get One Laporan : ${id}`,
 					data: fix,
 				});
-				const dataNow = await this.findOneById(id_laporan);
-				return socket.emit(`laporan`, { id_laporan, data: dataNow });
+				const dataNow = await this.findOneById(id);
+				return socket.emit(`laporan`, { id_laporan: id, data: dataNow });
 			} else {
 				return res.status(404).send({
 					status: res.statusCode,
