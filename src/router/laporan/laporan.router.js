@@ -14,6 +14,10 @@ router.get("/", async (req, res, next) => {
 	await controller.getAllLaporan(req, res, next);
 });
 
+router.get("/user", passport.authenticate("jwt-user", { session: false }), async (req, res, next) => {
+	await controller.getLaporanUser(req, res, next);
+});
+
 router.get("/:id", async (req, res, next) => {
 	await controller.getOneLaporan(req, res, next);
 });
