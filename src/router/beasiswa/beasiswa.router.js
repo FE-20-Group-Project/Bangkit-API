@@ -13,6 +13,10 @@ router.get("/", async (req, res, next) => {
 	await controller.readAllBeasiswa(req, res, next);
 });
 
+router.get("/instansi", passport.authenticate("jwt-instansi", { session: false }), async (req, res, next) => {
+	await controller.getBeasiswaByInstansi(req, res, next);
+});
+
 router.get("/:_id", passport.authenticate("jwt-all", { session: false }), async (req, res, next) => {
 	await controller.readOneBeasiswa(req, res, next);
 });
