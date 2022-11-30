@@ -31,6 +31,11 @@ export default class LaporanDB {
 		}
 	}
 
+	async getLaporanByUser(user) {
+		const array = await this.laporan.find({ user });
+		return array;
+	}
+
 	async findAllLaporan() {
 		const array = await this.laporan.find().populate("user", "-password");
 		let fix = [];
