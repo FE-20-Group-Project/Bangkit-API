@@ -2,6 +2,7 @@ import Beasiswa from "../../../database/models/beasiswa.model.js";
 import { moment } from "../../../lib/moment.js";
 import toMs from "ms";
 import Instansi from "../../../database/models/instansi.model.js";
+import mongoose from "mongoose";
 
 class BeasiswaInstansi {
 	constructor() {}
@@ -19,6 +20,12 @@ class BeasiswaInstansi {
 				return res.status(403).send({
 					status: res.statusCode,
 					message: `Data Instansi sedang Diproses`,
+				});
+			}
+			if (req.user.isBlocked) {
+				return res.status(423).send({
+					status: res.statusCode,
+					message: "Oops anda telah di block!",
 				});
 			}
 			const date = moment().format("DD/MM/YY HH:mm:ss");
@@ -79,30 +86,41 @@ class BeasiswaInstansi {
 			});
 		}
 	}
-
 	async getBeasiswaByInstansi(req, res, next) {
 		try {
-			const instansi = await Instansi.findOne({ _id: req.user._id });
-			const beasiswa = await Beasiswa.find({ user: req.user._id });
+			const { id } = req.params;
+			const instansi = await Instansi.findOne({ _id: mongoose.Types.ObjectId(id) });
+			const beasiswa = await Beasiswa.find({ user: instansi._id });
 
-			if (instansi.status == "pending") {
-				return res.status(403).send({
-					status: res.statusCode,
-					message: `Data Instansi sedang Diproses`,
-				});
-			} else {
-				if (beasiswa) {
-					return res.status(200).send({
+			if (beasiswa) {
+				if (req.user._id != id) {
+					return res.status(400).send({
 						status: res.statusCode,
-						message: `Success Get Data Beasiswa`,
-						data: beasiswa,
-					});
-				} else {
-					return res.status(404).send({
-						status: res.statusCode,
-						message: `Data Beasiswa Tidak Ditemukan`,
+						message: "Oops tidak bisa melihat data beasiswa instansi lain!",
 					});
 				}
+				if (instansi.status == "pending") {
+					return res.status(403).send({
+						status: res.statusCode,
+						message: `Data Instansi sedang Diproses`,
+					});
+				}
+				if (req.user.isBlocked) {
+					return res.status(423).send({
+						status: res.statusCode,
+						message: "Oops anda telah di block!",
+					});
+				}
+				return res.status(200).send({
+					status: res.statusCode,
+					message: `Success Get All Data Beasiswa`,
+					data: beasiswa,
+				});
+			} else {
+				return res.status(404).send({
+					status: res.statusCode,
+					message: `Data Beasiswa Tidak Ditemukan`,
+				});
 			}
 		} catch (error) {
 			console.log(error);
@@ -125,6 +143,25 @@ class BeasiswaInstansi {
 				const categoryx = category ? category : data.category;
 				const update = newDate;
 				const expiredx = expired ? Date.now() + toMs(`${expired}d`) : data.expired;
+
+				if (req.user._id != data.user.id) {
+					return res.status(400).send({
+						status: res.statusCode,
+						message: "Oops tidak bisa update data beasiswa instansi lain!",
+					});
+				}
+				if (cekStatus == "pending") {
+					return res.status(403).send({
+						status: res.statusCode,
+						message: `Data Instansi sedang Diproses`,
+					});
+				}
+				if (req.user.isBlocked) {
+					return res.status(423).send({
+						status: res.statusCode,
+						message: "Oops anda telah di block!",
+					});
+				}
 
 				const dataUpdate = await Beasiswa.findOneAndUpdate({ _id }, { name: namex, desc: descx, link: linkx, email: emailx, kuota: kuotax, category: categoryx, update, expired: expiredx }, { new: true });
 				return res.status(200).send({
@@ -150,17 +187,41 @@ class BeasiswaInstansi {
 	async deleteBeasiswa(req, res, next) {
 		try {
 			const { _id } = req.params;
-			await Beasiswa.deleteOne({ _id });
-			return res.status(200).send({
-				status: res.statusCode,
-				message: "delete data success!",
-			});
+			const cekStatus = req.user.status;
+			const data = await Beasiswa.findOne({ _id: mongoose.Types.ObjectId(_id) }).populate("user", "-password");
+			if (data) {
+				if (req.user._id != data.user.id) {
+					return res.status(400).send({
+						status: res.statusCode,
+						message: "Oops tidak bisa menghapus data beasiswa instansi lain!",
+					});
+				}
+				if (cekStatus == "pending") {
+					return res.status(403).send({
+						status: res.statusCode,
+						message: `Data Instansi sedang Diproses`,
+					});
+				}
+				if (req.user.isBlocked) {
+					return res.status(423).send({
+						status: res.statusCode,
+						message: "Oops anda telah di block!",
+					});
+				}
+				await Beasiswa.findOneAndDelete({ _id: mongoose.Types.ObjectId(_id) });
+				return res.status(202).send({
+					status: res.statusCode,
+					message: `delete data success!`,
+				});
+			} else {
+				return res.status(404).send({
+					status: res.statusCode,
+					message: `Data Beasiswa Tidak Ditemukan`,
+				});
+			}
 		} catch (error) {
 			console.log(error);
-			return res.status(500).send({
-				status: res.statusCode,
-				message: "internal server error",
-			});
+			return res.status(500).send({ status: res.statusCode, message: `Internal Server Error` });
 		}
 	}
 }
