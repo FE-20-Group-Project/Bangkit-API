@@ -18,7 +18,7 @@ router.put("/:id", passport.authenticate("jwt-all", { session: false }), createV
 	await controller.updateBalasan(req, res, next);
 });
 
-router.delete("/:id", passport.authenticate("jwt-all", { session: false }), async (req, res, next) => {
+router.delete("/:id/:laporan", passport.authenticate("jwt-all", { session: false }), async (req, res, next) => {
 	await controller.deleteOneBalasan(req, res, next);
 });
 
