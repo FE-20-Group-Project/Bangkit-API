@@ -14,6 +14,11 @@ const beasiswaSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	link: {
+		type: String,
+		required: true,
+	},
+
 	email: {
 		type: String,
 		required: true,
@@ -48,6 +53,7 @@ const beasiswaSchema = new Schema({
 		type: String,
 		required: true,
 	},
+
 	user: {
 		type: mongoose.ObjectId,
 		required: true,
