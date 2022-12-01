@@ -10,12 +10,12 @@ router.get("/", async (req, res, next) => {
 	await controller.getAllLoker(req, res, next);
 });
 
-router.get("/:id", passport.authenticate("jwt-all", { session: false }), async (req, res, next) => {
-	await controller.getLokerByID(req, res, next);
+router.get("/instansi/", passport.authenticate("jwt-instansi", { session: false }), async (req, res, next) => {
+	await controller.getLokerByInstansi(req, res, next);
 });
 
-router.get("/instansi/:id", passport.authenticate("jwt-instansi", { session: false }), async (req, res, next) => {
-	await controller.getLokerByInstansi(req, res, next);
+router.get("/:id", passport.authenticate("jwt-all", { session: false }), async (req, res, next) => {
+	await controller.getLokerByID(req, res, next);
 });
 
 router.post("/", passport.authenticate("jwt-instansi", { session: false }), createValidationFor("add-loker-instansi"), checkValidationResult, async (req, res, next) => {

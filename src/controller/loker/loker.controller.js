@@ -53,17 +53,10 @@ export default class LokerInstansi {
 
 	async getLokerByInstansi(req, res, next) {
 		try {
-			const { id } = req.params;
-			const instansi = await Instansi.findOne({ _id: mongoose.Types.ObjectId(id) });
-			const loker = await Loker.find({ user: instansi._id });
+			const instansi = await Instansi.findOne({ _id: req.user._id });
+			const loker = await Loker.find({ user: req.user._id });
 
 			if (loker) {
-				if (req.user._id != id) {
-					return res.status(400).send({
-						status: res.statusCode,
-						message: "Oops tidak bisa melihat data loker instansi lain!",
-					});
-				}
 				if (instansi.status == "pending") {
 					return res.status(403).send({
 						status: res.statusCode,
