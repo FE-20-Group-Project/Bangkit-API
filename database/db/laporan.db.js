@@ -72,14 +72,14 @@ export default class LaporanDB {
 		await this.laporan.deleteMany();
 	}
 
-	async updateLaporan(_id, title, category, subcategory, content, image) {
+	async updateLaporan(_id, title, category, subcategory, content, image, status) {
 		const data = await this.laporan.findOne({ _id });
 		if (data) {
 			data.image.forEach((v) => {
 				fs.unlinkSync(`./public${v}`);
 			});
 			const date = moment().format("DD/MM/YY HH:mm:ss");
-			const datas = await this.laporan.findOneAndUpdate(mongoose.Types.ObjectId(_id), { title, category, subcategory, content, update: date, image }, { new: true }).populate("user", "-password");
+			const datas = await this.laporan.findOneAndUpdate(mongoose.Types.ObjectId(_id), { status, title, category, subcategory, content, update: date, image }, { new: true }).populate("user", "-password");
 			const arr = await this.getReply(datas.reply);
 			let obj = datas;
 			obj.reply = undefined;

@@ -167,8 +167,15 @@ export default class LaporanUserController extends LaporanDB {
 
 	async updateOneLaporan(req, res, next) {
 		try {
+			let arrayStatus = ["solved", "posted", "expired"];
 			const { id } = req.params;
-			const { title, content, category, subcategory } = req.body;
+			const { title, content, category, subcategory, status } = req.body;
+			if (!arrayStatus.includes(status)) {
+				return res.status(400).send({
+					status: res.statusCode,
+					message: `Input status dengan salah satu dari ${arrayStatus}`,
+				});
+			}
 			const data = await this.findOneById(id);
 			if (data) {
 				if (data.laporan.user.email == req.user.email) {
@@ -194,7 +201,7 @@ export default class LaporanUserController extends LaporanDB {
 						}
 					}
 					const obj = { title: title ? title : data.title, content: content ? content : data.content, category: category ? category : data.category, subcategory: subcategory ? subcategory : data.subcategory };
-					const updates = await this.updateLaporan(id, obj.title, obj.category, obj.subcategory, obj.content, arrDest);
+					const updates = await this.updateLaporan(id, obj.title, obj.category, obj.subcategory, obj.content, arrDest, status);
 					return res.status(200).send({
 						status: res.statusCode,
 						message: `Sukses Update One Laporan : ${id}`,
