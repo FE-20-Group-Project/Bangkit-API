@@ -132,7 +132,7 @@ export default class ReplyController extends LaporanDB {
 
 	async deleteOneBalasan(req, res, next) {
 		try {
-			const { id } = req.params;
+			const { id, laporan } = req.params;
 			const data = await this.findReplyId(id);
 			if (data) {
 				if (data.data_user.email == req.user.email) {
@@ -143,10 +143,12 @@ export default class ReplyController extends LaporanDB {
 						});
 					}
 					await this.deleteOneReply(id);
-					return res.status(200).send({
+					res.status(200).send({
 						status: res.statusCode,
 						message: `Sukses Delete One Reply : ${id}`,
 					});
+					const dataNow = await this.findOneById(laporan);
+					return socket.emit(`laporan`, { id_laporan: laporan, data: dataNow });
 				} else {
 					return res.status(404).send({
 						status: res.statusCode,
