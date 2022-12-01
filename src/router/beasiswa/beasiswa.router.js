@@ -1,11 +1,12 @@
 import express from "express";
 import passport from "passport";
 import BeasiswaInstansi from "../../controller/beasiswa/beasiswa.controller.js";
+import { checkValidationResult, createValidationFor } from "../../middleware/validator.middleware.js";
 
 const router = express.Router();
 const controller = new BeasiswaInstansi();
 
-router.post("/", passport.authenticate("jwt-instansi", { session: false }), async (req, res, next) => {
+router.post("/", passport.authenticate("jwt-instansi", { session: false }), createValidationFor("create-beasiswa-instansi"), checkValidationResult, async (req, res, next) => {
 	await controller.createBeasiswa(req, res, next);
 });
 
