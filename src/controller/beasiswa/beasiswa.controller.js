@@ -88,17 +88,11 @@ class BeasiswaInstansi {
 	}
 	async getBeasiswaByInstansi(req, res, next) {
 		try {
-			const { id } = req.params;
-			const instansi = await Instansi.findOne({ _id: mongoose.Types.ObjectId(id) });
+			// const { id } = req.params;
+			const instansi = await Instansi.findOne({ _id: mongoose.Types.ObjectId(req.user._id) });
 			const beasiswa = await Beasiswa.find({ user: instansi._id });
 
 			if (beasiswa) {
-				if (req.user._id != id) {
-					return res.status(400).send({
-						status: res.statusCode,
-						message: "Oops tidak bisa melihat data beasiswa instansi lain!",
-					});
-				}
 				if (instansi.status == "pending") {
 					return res.status(403).send({
 						status: res.statusCode,
