@@ -101,7 +101,7 @@ export default class LaporanDB {
 		const arr = [];
 		for (let i = 0; i < array.length; i++) {
 			const data = await this.getUser(array[i].user);
-			arr.push({ data_reply: array[i], data_user: { name: data.name ? data.name : "Admin", email: data.email, image: data.image ? data.image : "/profile/none.png" } });
+			arr.push({ data_reply: array[i], data_user: { name: data.name ? data.name : "Admin", email: data.email, image: data.image ? data.image : "/profile/none.png", status: data.status } });
 		}
 		return arr;
 	}
