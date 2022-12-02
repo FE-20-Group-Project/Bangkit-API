@@ -10,7 +10,7 @@ router.get("/", async (req, res, next) => {
 	await controller.getAllLoker(req, res, next);
 });
 
-router.get("/instansi/", passport.authenticate("jwt-instansi", { session: false }), async (req, res, next) => {
+router.get("/instansi", passport.authenticate("jwt-instansi", { session: false }), async (req, res, next) => {
 	await controller.getLokerByInstansi(req, res, next);
 });
 
