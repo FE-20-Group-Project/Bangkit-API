@@ -56,7 +56,7 @@ function createValidationFor(route) {
 			return [
 				body("positionName").notEmpty().withMessage("Input position name!"),
 				body("desc").notEmpty().withMessage("Input description!"),
-				body("category").notEmpty().withMessage("Input job category!").isArray().withMessage("Input must be array!"),
+				body("category").notEmpty().withMessage("Input job category!"),
 				body("location").notEmpty().withMessage("Input company location!"),
 				body("salary").notEmpty().withMessage("Input salary!"),
 				body("qualification").notEmpty().withMessage("Input company qualification!"),
@@ -68,7 +68,7 @@ function createValidationFor(route) {
 				body("name").notEmpty().withMessage("Input beasiswa name!"),
 				body("desc").notEmpty().withMessage("Input description!"),
 				body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"),
-				body("category").notEmpty().withMessage("Input beasiswa category!").isArray().withMessage("Input must be array!"),
+				body("category").notEmpty().withMessage("Input beasiswa category!"),
 				body("expired").notEmpty().withMessage("Input total day before expired!"),
 			];
 		default:

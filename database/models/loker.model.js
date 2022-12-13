@@ -23,7 +23,7 @@ const lokerSchema = new Schema({
 		required: true,
 	},
 	category: {
-		type: Array,
+		type: String,
 		required: true,
 	},
 	location: {

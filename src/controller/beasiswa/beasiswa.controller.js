@@ -88,7 +88,6 @@ class BeasiswaInstansi {
 	}
 	async getBeasiswaByInstansi(req, res, next) {
 		try {
-			// const { id } = req.params;
 			const instansi = await Instansi.findOne({ _id: mongoose.Types.ObjectId(req.user._id) });
 			const beasiswa = await Beasiswa.find({ user: instansi._id });
 
