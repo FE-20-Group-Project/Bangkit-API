@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs";
 import AdminDB from "../../../database/db/admins.db.js";
 import InstansiDB from "../../../database/db/instansi.db.js";
 import UserDB from "../../../database/db/users.db.js";
@@ -36,7 +37,9 @@ export default class RegisterController {
 					var dest = `./public/profile/${randomText(15)}${path.extname(file.name)}`;
 					await file.mv(dest);
 				} else {
-					var dest = `./public/profile/none.png`;
+					var dest = `./public/profile/${randomText(15)}.png`;
+					let buffer = fs.readFileSync("./public/profile/none.png");
+					fs.writeFileSync(dest, buffer);
 				}
 				const data = await this.user.createUser(name, email, hashed, contact, dest.split("public")[1]);
 				return res.status(200).send({
@@ -54,7 +57,7 @@ export default class RegisterController {
 	async registerIntansi(req, res, next) {
 		try {
 			const { name, email, password } = req.body;
-			if (req.files.dokumen && Object.keys(req.files?.dokumen).length !== 0) {
+			if (req.files?.dokumen && Object.keys(req.files?.dokumen).length !== 0) {
 				const file = req.files.dokumen;
 				var destDoc = `./public/dokumen/${randomText(15)}${path.extname(file.name)}`;
 				await file.mv(destDoc);
@@ -85,7 +88,9 @@ export default class RegisterController {
 					var dest = `./public/profile/${randomText(15)}${path.extname(file.name)}`;
 					await file.mv(dest);
 				} else {
-					var dest = `./public/profile/none.png`;
+					var dest = `./public/profile/${randomText(15)}.png`;
+					let buffer = fs.readFileSync("./public/profile/none.png");
+					fs.writeFileSync(dest, buffer);
 				}
 				const data = await this.instansi.createInstansi(name, email, hashed, dest.split("public")[1], destDoc.split("public")[1]);
 				return res.status(200).send({
