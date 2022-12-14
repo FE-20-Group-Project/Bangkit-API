@@ -67,7 +67,6 @@ function createValidationFor(route) {
 			return [
 				body("name").notEmpty().withMessage("Input beasiswa name!"),
 				body("desc").notEmpty().withMessage("Input description!"),
-				body("email").notEmpty().withMessage("Input email!").isEmail().withMessage("Input valid email!"),
 				body("category").notEmpty().withMessage("Input beasiswa category!"),
 				body("expired").notEmpty().withMessage("Input total day before expired!"),
 			];
