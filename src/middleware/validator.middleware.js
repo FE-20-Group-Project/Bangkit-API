@@ -80,7 +80,7 @@ function checkValidationResult(req, res, next) {
 		return next();
 	}
 	let err = result.array();
-	res.status(422).json({ status: res.statusCode, message: err[0] });
+	return res.status(400).json({ status: res.statusCode, message: err[0] });
 }
 
 export { createValidationFor, checkValidationResult };
